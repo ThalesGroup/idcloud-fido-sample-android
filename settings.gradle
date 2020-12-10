@@ -1,0 +1,2 @@
+include ':app:idcloudclientsample'
+include ':lib:idcloudclientui'
