@@ -49,7 +49,6 @@ public class ChangePin  {
             @Override
             public void onProgress(final IdCloudProgress code) {
                 switch (code) {
-                    case START:
                     case RETRIEVING_REQUEST:
                     case VALIDATING_AUTHENTICATION:
                         Progress.showProgress(activity, code);
