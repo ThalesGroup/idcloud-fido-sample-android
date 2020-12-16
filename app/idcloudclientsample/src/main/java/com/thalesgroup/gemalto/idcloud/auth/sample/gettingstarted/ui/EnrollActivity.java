@@ -1,9 +1,5 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,6 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;

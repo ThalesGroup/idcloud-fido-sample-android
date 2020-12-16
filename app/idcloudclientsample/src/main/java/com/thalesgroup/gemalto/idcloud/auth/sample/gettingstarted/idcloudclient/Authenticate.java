@@ -36,40 +36,39 @@ public class Authenticate {
             public void onSuccess(FetchResponse fetchResponse) {
                 sampleResponseCallback.onSuccess();
                 listener.onSuccess();
+                Progress.hideProgress();
             }
 
             @Override
             public void onError(IdCloudClientException e) {
                 sampleResponseCallback.onError();
                 listener.onError(e);
+                Progress.hideProgress();
             }
 
             @Override
             public void onProgress(IdCloudProgress code) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (code) {
-                            case RETRIEVING_REQUEST:
-                            case VALIDATING_AUTHENTICATION:
-                                if(Progress.progressDialog == null) {
-                                    Progress.showProgressDialog(activity, code);
-                                } else {
-                                    Progress.updateProgressMessage(activity,code);
-                                }
-                                break;
-                            case PROCESSING_REQUEST:
-                            case END:
-                                Progress.dismissProgress();
-                                break;
-                        }
-                    }
-                });
+                switch (code) {
+                    case START:
+                    case RETRIEVING_REQUEST:
+                    case VALIDATING_AUTHENTICATION:
+                        Progress.showProgress(activity, code);
+                        break;
+                    case PROCESSING_REQUEST:
+                    case END:
+                        Progress.hideProgress();
+                        break;
+                 }
             }
         };
 
         // Create an instance of the Fetch request.
         // Instances of requests should be held as an instance variable to ensure that callbacks will function as expected and to prevent unexpected behaviour.
-        idCloudClient.createFetchRequest(uiCallbacks, fetchRequestCallback).execute();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                idCloudClient.createFetchRequest(uiCallbacks, fetchRequestCallback).execute();
+            }
+        }).start();
     }
 }

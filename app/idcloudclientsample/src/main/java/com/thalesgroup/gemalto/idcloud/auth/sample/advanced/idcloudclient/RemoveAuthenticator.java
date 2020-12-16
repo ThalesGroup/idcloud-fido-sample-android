@@ -10,8 +10,10 @@ import com.thales.dis.mobile.idcloud.auth.Authenticator;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
+import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.operation.RemoveAuthenticatorRequestCallback;
 import com.thales.dis.mobile.idcloud.auth.operation.RemoveAuthenticatorResponse;
+import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.advanced.ui.AuthenticatorsFragment;
 
 
@@ -30,25 +32,39 @@ public class RemoveAuthenticator  {
     }
 
     public void execute(AuthenticatorsFragment.OnExecuteFinishListener listener) {
+        //Set remove Authenticator Request Callback
+        RemoveAuthenticatorRequestCallback removeAuthenticatorRequestCallback = new RemoveAuthenticatorRequestCallback() {
+            @Override
+            public void onSuccess(@NonNull RemoveAuthenticatorResponse response) {
+                listener.onSuccess();
+                Progress.hideProgress();
+            }
 
-        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void onError(@NonNull IdCloudClientException exception) {
+                listener.onError(exception);
+                Progress.hideProgress();
+            }
+
+            @Override
+            public void onProgress(final IdCloudProgress code) {
+                switch (code) {
+                    case START:
+                        Progress.showProgress(activity, code);
+                        break;
+                    case PROCESSING_REQUEST:
+                    case END:
+                        Progress.hideProgress();
+                        break;
+                }
+            }
+        };
+        // Create Remove authenticator request with callbacks and execute request
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                //Set remove Authenticator Request Callback
-                RemoveAuthenticatorRequestCallback removeAuthenticatorRequestCallback = new RemoveAuthenticatorRequestCallback() {
-                    @Override
-                    public void onSuccess(@NonNull RemoveAuthenticatorResponse response) {
-                        listener.onSuccess();
-                    }
-
-                    @Override
-                    public void onError(@NonNull IdCloudClientException exception) {
-                        listener.onError(exception);
-                    }
-                };
-                // Create Remove authenticator request with callbacks and execute request
                 idCloudClient.createRemoveAuthenticatorRequest(authenticator.getType(), removeAuthenticatorRequestCallback).execute();
             }
-        });
+        }).start();
     }
 }

@@ -13,6 +13,7 @@ import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
+import com.thalesgroup.gemalto.idcloud.auth.sample.SamplePersistence;
 import com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui.EnrollActivity;
 
 public class Enroll  {
@@ -43,47 +44,46 @@ public class Enroll  {
         EnrollRequestCallback enrollRequestCallback = new EnrollRequestCallback() {
             @Override
             public void onSuccess(EnrollResponse enrollResponse) {
+                SamplePersistence.setIsEnrolled(activity, true);
                 sampleResponseCallback.onSuccess();
                 listener.onSuccess();
+                Progress.hideProgress();
             }
 
             @Override
             public void onError(IdCloudClientException e) {
                 sampleResponseCallback.onError();
                 listener.onError(e);
+                Progress.hideProgress();
             }
 
             @Override
             public void onProgress(final IdCloudProgress code) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (code) {
-                            case RETRIEVING_REQUEST:
-                            case VALIDATING_AUTHENTICATION:
-                                if(Progress.progressDialog == null) {
-                                    Progress.showProgressDialog(activity, code);
-                                } else {
-                                    Progress.updateProgressMessage(activity,code);
-                                }
-                                break;
-                            case PROCESSING_REQUEST:
-                            case END:
-                                Progress.dismissProgress();
-                                break;
-                        }
-                    }
-                });
+                switch (code) {
+                    case START:
+                    case RETRIEVING_REQUEST:
+                    case VALIDATING_AUTHENTICATION:
+                        Progress.showProgress(activity, code);
+                        break;
+                    case PROCESSING_REQUEST:
+                    case END:
+                        Progress.hideProgress();
+                        break;
+                }
             }
         };
 
         // Create an instance of the Enrollment request providing the required credentials.
         // Instances of requests should be held as an instance variable to ensure that completion callbacks will function as expected and to prevent unexpected behaviour.
-        idCloudClient.createEnrollRequest(
-                token,
-                uiCallbacks,
-                enrollRequestCallback
-        ).execute();
-
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                idCloudClient.createEnrollRequest(
+                        token,
+                        uiCallbacks,
+                        enrollRequestCallback
+                ).execute();
+            }
+        }).start();
     }
 }

@@ -29,51 +29,49 @@ public class ChangePin  {
     }
 
     public void execute(AuthenticatorsFragment.OnExecuteFinishListener listener) {
+        //Set changePin request callback
+        final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
+        ChangePinRequestCallback changePinRequestCallback = new ChangePinRequestCallback() {
+            @Override
+            public void onSuccess(ChangePinResponse changePinResponse) {
+                sampleResponseCallback.onSuccess();
+                listener.onSuccess();
+                Progress.hideProgress();
+            }
 
-        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void onError(IdCloudClientException e) {
+                sampleResponseCallback.onError();
+                listener.onError(e);
+                Progress.hideProgress();
+            }
+
+            @Override
+            public void onProgress(final IdCloudProgress code) {
+                switch (code) {
+                    case START:
+                    case RETRIEVING_REQUEST:
+                    case VALIDATING_AUTHENTICATION:
+                        Progress.showProgress(activity, code);
+                        break;
+                    case PROCESSING_REQUEST:
+                    case END:
+                        Progress.hideProgress();
+                        break;
+                }
+            }
+        };
+
+        // Create Change pin request with callbacks
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                //Set changePin request callback
-                final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
-                ChangePinRequestCallback changePinRequestCallback = new ChangePinRequestCallback() {
-                    @Override
-                    public void onSuccess(ChangePinResponse changePinResponse) {
-                        sampleResponseCallback.onSuccess();
-                        listener.onSuccess();
-                    }
-
-                    @Override
-                    public void onError(IdCloudClientException e) {
-                        sampleResponseCallback.onError();
-                        listener.onError(e);
-                    }
-
-                    @Override
-                    public void onProgress(final IdCloudProgress code) {
-                        switch (code) {
-                            case RETRIEVING_REQUEST:
-                            case VALIDATING_AUTHENTICATION:
-                                if(Progress.progressDialog == null) {
-                                    Progress.showProgressDialog(activity, code);
-                                } else {
-                                    Progress.updateProgressMessage(activity,code);
-                                }
-                                break;
-                            case PROCESSING_REQUEST:
-                            case END:
-                                Progress.dismissProgress();
-                                break;
-                        }
-                    }
-                };
-
-                // Create Change pin request with callbacks
                 idCloudClient.createChangePinRequest(
                         securePinPadUiCallback,
                         changePinRequestCallback
                 ).execute();
             }
-        });
+        }).start();
     }
 
 }

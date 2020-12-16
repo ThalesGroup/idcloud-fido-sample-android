@@ -5,18 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageButton
-        android:id="@+id/imageButton_shareInAuthenticate"
-        android:layout_width="83dp"
-        android:layout_height="65dp"
-        android:background="@null"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05"
-        app:srcCompat="@android:drawable/ic_menu_share" />
-
     <Button
         android:id="@+id/button_authenticate"
         android:layout_width="wrap_content"
@@ -48,13 +36,15 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_authenticators"
-        android:layout_width="match_parent"
-        android:layout_height="86dp"
+        android:layout_width="378dp"
+        android:layout_height="84dp"
         android:background="@null"
+        app:layout_constraintBottom_toTopOf="@+id/button_authenticate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.677"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <Button
             android:id="@+id/button_unenroll"
@@ -67,6 +57,16 @@
             android:textSize="20sp"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="19dp" />
+
+        <ImageButton
+            android:id="@+id/imageButton_shareInAuthenticate"
+            android:layout_width="83dp"
+            android:layout_height="65dp"
+            android:layout_gravity="end"
+            android:background="@null"
+            app:srcCompat="@android:drawable/ic_menu_share"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="19dp"/>
 
     </androidx.appcompat.widget.Toolbar>
 

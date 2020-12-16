@@ -306,15 +306,16 @@ public class AuthenticatorsFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                // Reload fragment to refresh authenticator list
+                final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.detach(AuthenticatorsFragment.this).attach(AuthenticatorsFragment.this).commit();
+
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AuthenticatorsFragment.this.getContext())
                         .setTitle(title)
                         .setMessage(message)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                // Reload fragment to refresh authenticator list
-                                final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                                ft.detach(AuthenticatorsFragment.this).attach(AuthenticatorsFragment.this).commit();
 
                                 if(title == getString(R.string.removeauthenticator_alert_title)) {
                                     deleteButton.setVisibility(View.GONE);
