@@ -325,7 +325,7 @@ public class AuthenticatorsFragment extends Fragment {
                         });
 
                 AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.setCanceledOnTouchOutside(true);
+                alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.show();
             }
         });

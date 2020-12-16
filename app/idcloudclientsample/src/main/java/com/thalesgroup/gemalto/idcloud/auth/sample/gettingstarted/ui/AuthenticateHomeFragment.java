@@ -177,7 +177,7 @@ public class AuthenticateHomeFragment extends Fragment {
                             }
                         });
                 AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.setCanceledOnTouchOutside(true);
+                alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.show();
             }
         });
