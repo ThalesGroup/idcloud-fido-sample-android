@@ -1,0 +1,64 @@
+<resources >
+    <string name="title_activity_navigation">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_authenticators">Authenticators</string>
+    <string name="buttonText_enroll">Enroll</string>
+    <string name="textViewText_enroll">Please generate a QR code on Postman prior to enrollment.</string>
+    <string name="buttonText_authenticate">Authenticate</string>
+    <string name="textViewText_authenticate">Please generate an Authentication event on Postman prior to authentication.</string>
+    <string name="buttonText_unenroll">Unenroll</string>
+
+    <string name="buttonText_edit">Edit</string>
+    <string name="buttonText_add">+</string>
+
+    <string name="title_changepin">Change PIN</string>
+    <string name="title_cancel">Cancel</string>
+    <string name="title_biometric_authenticator">Biometric Authenticator</string>
+    <string name="title_pin_authenticator">PIN Authenticator</string>
+    <string name="title_system_embeded_authenticator">System Embedded Authenticator</string>
+    <string name="toolbar_title">Authenticators</string>
+    <string name="alert_error_title">Error</string>
+
+    <string name="usecase_enrollment">Enrollment</string>
+    <string name="usecase_fetch">Fetch</string>
+    <string name="usecase_changepin">Change Pin</string>
+    <string name="usecase_addauthenticator">Add Authenticator</string>
+    <string name="usecase_removeauthenticator">Remove Authenticator</string>
+
+    <!-- Enroll   -->
+    <string name="enroll_alert_title">Enrollment</string>
+    <string name="enroll_alert_message">You have been successfully enrolled.</string>
+
+    <!-- Authenticate   -->
+    <string name="authenticate_alert_title">Authentication</string>
+    <string name="authenticate_alert_message">You have been successfully authenticated.</string>
+
+    <!-- Change Pin  -->
+    <string name="changepin_alert_title">Change PIN</string>
+    <string name="changepin_alert_message">Your PIN has been updated.</string>
+
+    <!-- Add Authenticator  -->
+    <string name="addauthenticator_alert_title">Add Authenticator</string>
+    <string name="addauthenticator_message">You have successfully added a new authenticator.</string>
+
+    <!-- Remove Authenticator  -->
+    <string name="removeauthenticator_alert_title">Remove Authenticator</string>
+    <string name="removeauthenticator_alert_message">Your authenticator has been removed.</string>
+
+    <!-- Unenroll  -->
+    <string name="unenroll_alert_title">Unenroll</string>
+    <string name="unenroll_alert_message">You have been unenrolled.</string>
+
+    <!-- Progress -->
+    <string name="progress_start">Executing</string>
+    <string name="progress_sending_request">Sending request</string>
+    <string name="progress_retrieving_request">Retrieving request</string>
+    <string name="progress_processing_request">Processing request</string>
+    <string name="progress_validating_authentication">Validating authentication</string>
+    <string name="progress_end">Done</string>
+
+    <!-- Share SecureLog -->
+    <string name="secureLog_email_content">Hi Thales Fido team,\n\nThe Sample application is failing.\nPlease check more detail in the attached log file.\n\nRegards,</string>
+    <string name="securelog_chooser_title">Select an Email application to send the Logs</string>
+
+</resources>

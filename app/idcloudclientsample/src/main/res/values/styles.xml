@@ -1,0 +1,26 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:alertDialogStyle">@style/CustomProgressDialogStyle</item>
+        <item name="android:textColorPrimary">@color/black</item>
+    </style>
+
+    <style name="CustomProgressDialogStyle">
+        <item name="android:bottomBright">@color/grey</item>
+        <item name="android:bottomDark">@color/grey</item>
+        <item name="android:bottomMedium">@color/grey</item>
+        <item name="android:centerBright">@color/grey</item>
+        <item name="android:centerDark">@color/grey</item>
+        <item name="android:centerMedium">@color/grey</item>
+        <item name="android:fullBright">@color/grey</item>
+        <item name="android:fullDark">@color/grey</item>
+        <item name="android:topBright">@color/grey</item>
+        <item name="android:topDark">@color/grey</item>
+    </style>
+</resources>
