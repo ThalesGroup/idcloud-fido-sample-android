@@ -105,7 +105,7 @@ public class AuthenticatorsFragment extends Fragment {
                     textString[i] = getString(R.string.title_pin_authenticator);
                     drawableIds[i] = R.drawable.ic_dialpad;
                     break;
-                case BIOMETIRC:
+                case BIOMETRIC:
                     textString[i] = getString(R.string.title_biometric_authenticator);
                     drawableIds[i] = R.drawable.ic_fingerprint;
                     break;

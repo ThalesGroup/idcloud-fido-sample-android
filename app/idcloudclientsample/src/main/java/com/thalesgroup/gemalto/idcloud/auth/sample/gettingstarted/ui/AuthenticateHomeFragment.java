@@ -132,14 +132,10 @@ public class AuthenticateHomeFragment extends Fragment {
 
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
-        UiCallbacks uiCallbacks = new UiCallbacks();
-        SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
-                fragmentManager, getString(R.string.usecase_fetch)
-        );
-        uiCallbacks.securePinPadUiCallback = securePinUiCallback;
-        uiCallbacks.commonUiCallback = new SampleCommonUiCallback(
-                fragmentManager
-        );
+        // Set up an instance of UiCallbacks, an encapsulated class containing all necessary UI callbacks required by IdCloud FIDO SDK.
+        // As a means of convenience, the IdCloud FIDO UI SDK provides a SampleSecurePinUiCallback,SampleCommonUiCallback class which conforms to the necessary callbacks of IdCloud FIDO SDK
+        /* 1 */
+        ## Set up the necessary UI callbacks ##
 
         authenticateObj = new Authenticate(getActivity(), Configuration.url, uiCallbacks);
         authenticateObj.execute(listener);
