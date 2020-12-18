@@ -22,8 +22,8 @@
 
     <TextView
         android:id="@+id/textView_authenticate"
-        android:layout_width="327dp"
-        android:layout_height="57dp"
+        android:layout_width="328dp"
+        android:layout_height="267dp"
         android:singleLine="false"
         android:text="@string/textViewText_authenticate"
         android:textColor="@color/black"

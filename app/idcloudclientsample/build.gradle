@@ -57,13 +57,13 @@ android {
 
     flavorDimensions "sampletarget"
     productFlavors {
-        GettingStarted {
+        gettingStarted {
             dimension "sampletarget"
             versionNameSuffix "-gettingstarted"
             applicationIdSuffix ".gettingstarted"
-            resValue "string", "app_name", "Gettingstarted"
+            resValue "string", "app_name", "Getting Started"
         }
-        Advanced {
+        advanced {
             dimension "sampletarget"
             versionNameSuffix "-advanced"
             applicationIdSuffix ".advanced"

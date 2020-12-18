@@ -13,8 +13,7 @@ import android.view.View;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.thalesgroup.gemalto.idcloud.auth.sample.BuildConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
-import com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui.AuthenticateHomeFragment;
-import com.thalesgroup.gemalto.idcloud.auth.sample.advanced.ui.AuthenticatorsFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticateHomeFragment;
 
 public class MainViewActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -30,10 +29,7 @@ public class MainViewActivity extends AppCompatActivity implements BottomNavigat
 
         //getting bottom navigation view and attaching the listener
         navigation = findViewById(R.id.navigation);
-        if (BuildConfig.FLAVOR.equals("GettingStarted")) {
-            hideBottomNav();
-        }
-
+        hideBottomNav();
         navigation.setOnNavigationItemSelectedListener(this);
     }
 
@@ -44,10 +40,6 @@ public class MainViewActivity extends AppCompatActivity implements BottomNavigat
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 fragment = new AuthenticateHomeFragment();
-                break;
-
-            case R.id.navigation_authenticators:
-                fragment = new AuthenticatorsFragment();
                 break;
         }
 

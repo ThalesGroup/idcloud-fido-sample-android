@@ -1,35 +1,39 @@
-package com.thalesgroup.gemalto.idcloud.auth.sample.advanced.idcloudclient;
+package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
 import androidx.fragment.app.FragmentActivity;
+
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
-
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
+import com.thales.dis.mobile.idcloud.auth.operation.ChangePinRequestCallback;
+import com.thales.dis.mobile.idcloud.auth.operation.ChangePinResponse;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
-import com.thales.dis.mobile.idcloud.auth.operation.UnenrollRequestCallback;
-import com.thales.dis.mobile.idcloud.auth.operation.UnenrollResponse;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.SamplePersistence;
-import com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui.AuthenticateHomeFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticatorsFragment;
 
-public class Unenroll  {
+
+public class ChangePin  {
 
     private FragmentActivity activity;
+    private SampleSecurePinUiCallback securePinPadUiCallback;
     private IdCloudClient idCloudClient;
 
-    public Unenroll(FragmentActivity activity,String url) {
+    public ChangePin(FragmentActivity activity, String url, SampleSecurePinUiCallback securePinPadUiCallback) {
         this.activity = activity;
+        this.securePinPadUiCallback = securePinPadUiCallback;
+
         // Initialize an instance of IdCloudClient.
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(AuthenticateHomeFragment.OnExecuteFinishListener listener) {
+    public void execute(AuthenticatorsFragment.OnExecuteFinishListener listener) {
+        //Set changePin request callback
         final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
-        UnenrollRequestCallback unenrollRequestCallback = new UnenrollRequestCallback() {
+        ChangePinRequestCallback changePinRequestCallback = new ChangePinRequestCallback() {
             @Override
-            public void onSuccess(UnenrollResponse unenrollResponse) {
-                SamplePersistence.setIsEnrolled(activity, false);
+            public void onSuccess(ChangePinResponse changePinResponse) {
                 sampleResponseCallback.onSuccess();
                 listener.onSuccess();
                 Progress.hideProgress();
@@ -45,7 +49,8 @@ public class Unenroll  {
             @Override
             public void onProgress(final IdCloudProgress code) {
                 switch (code) {
-                    case START:
+                    case RETRIEVING_REQUEST:
+                    case VALIDATING_AUTHENTICATION:
                         Progress.showProgress(activity, code);
                         break;
                     case PROCESSING_REQUEST:
@@ -56,11 +61,14 @@ public class Unenroll  {
             }
         };
 
-        //Create unenroll request and execute request.
+        // Create Change pin request with callbacks
         new Thread(new Runnable() {
             @Override
             public void run() {
-                idCloudClient.createUnenrollRequest(unenrollRequestCallback).execute();
+                idCloudClient.createChangePinRequest(
+                        securePinPadUiCallback,
+                        changePinRequestCallback
+                ).execute();
             }
         }).start();
     }

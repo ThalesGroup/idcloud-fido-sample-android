@@ -1,4 +1,4 @@
-package com.thalesgroup.gemalto.idcloud.auth.sample.advanced.idcloudclient;
+package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
 import androidx.fragment.app.FragmentActivity;
 

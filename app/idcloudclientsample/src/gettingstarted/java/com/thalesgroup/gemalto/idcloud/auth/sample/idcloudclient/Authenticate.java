@@ -1,6 +1,7 @@
-package com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.idcloudclient;
+package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
@@ -10,20 +11,20 @@ import com.thales.dis.mobile.idcloud.auth.operation.FetchRequestCallback;
 import com.thales.dis.mobile.idcloud.auth.operation.FetchResponse;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.SamplePersistence;
-import com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui.AuthenticateHomeFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.R;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticateHomeFragment;
 
 public class Authenticate {
 
     private FragmentActivity activity;
-    private UiCallbacks uiCallbacks;
     private IdCloudClient idCloudClient;
 
-    public Authenticate(FragmentActivity activity, String url, UiCallbacks uiCallbacks) {
+    public Authenticate(FragmentActivity activity, String url) {
         this.activity = activity;
-        this.uiCallbacks = uiCallbacks;
 
         // Initialize an instance of IdCloudClient.
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
@@ -31,13 +32,22 @@ public class Authenticate {
 
     public void execute(AuthenticateHomeFragment.OnExecuteFinishListener listener) {
 
-        //Set fetch request callbacks
-        /* 2 */
-        ## Create request callback ##
+        Progress.showProgress(activity, IdCloudProgress.START);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                // Set up an instance of UiCallbacks, an encapsulated class containing all necessary UI callbacks required by IdCloud FIDO SDK.
+                // As a means of convenience, the IdCloud FIDO UI SDK provides a SampleSecurePinUiCallback,SampleCommonUiCallback class which conforms to the necessary callbacks of IdCloud FIDO SDK
+                /* 1 */
+                ## Set up the necessary UI callbacks ##
+
+                //Set fetch request callbacks
+                /* 2 */
+                ## Create request callback ##
+
                 // Create an instance of the Fetch request.
                 // Instances of requests should be held as an instance variable to ensure that callbacks will function as expected and to prevent unexpected behaviour.
                 /* 3 */

@@ -1,4 +1,4 @@
-package com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui;
+package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,15 +28,14 @@ import com.thalesgroup.gemalto.idcloud.auth.sample.BuildConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SecureLogArchive;
-import com.thalesgroup.gemalto.idcloud.auth.sample.advanced.idcloudclient.Unenroll;
-import com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.idcloudclient.Authenticate;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Unenroll;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Authenticate;
 
 import java.io.File;
 
 
 public class AuthenticateHomeFragment extends Fragment {
 
-    private Authenticate authenticateObj;
     private Unenroll unenrollObj;
 
     @Override
@@ -88,26 +87,23 @@ public class AuthenticateHomeFragment extends Fragment {
             }
         });
 
-        if (BuildConfig.FLAVOR.equals("Advanced")) {
-            Button addButton = (Button) view.findViewById(R.id.button_unenroll);
-            addButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Execute the add Unenroll use-case.
-                    executeUnenroll(new OnExecuteFinishListener() {
-                        @Override
-                        public void onSuccess() {
-                            showAlertDialog(getString(R.string.unenroll_alert_title), getString(R.string.unenroll_alert_message));
-                        }
-                        @Override
-                        public void onError(IdCloudClientException e) {
-                            showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
-                        }
-                    });
-                }
-            });
-        }
-
+        Button addButton = (Button) view.findViewById(R.id.button_unenroll);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Execute the add Unenroll use-case.
+                executeUnenroll(new OnExecuteFinishListener() {
+                    @Override
+                    public void onSuccess() {
+                        showAlertDialog(getString(R.string.unenroll_alert_title), getString(R.string.unenroll_alert_message));
+                    }
+                    @Override
+                    public void onError(IdCloudClientException e) {
+                        showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
+                    }
+                });
+            }
+        });
         return view;
     }
 
@@ -128,16 +124,7 @@ public class AuthenticateHomeFragment extends Fragment {
     private void executeAuthenticate(final AuthenticateHomeFragment.OnExecuteFinishListener listener) {
         // Initialize an instance of the Authenticate use-case, providing
         // (1) the pre-configured URL
-        // (2) the uiCallbacks
-
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-
-        // Set up an instance of UiCallbacks, an encapsulated class containing all necessary UI callbacks required by IdCloud FIDO SDK.
-        // As a means of convenience, the IdCloud FIDO UI SDK provides a SampleSecurePinUiCallback,SampleCommonUiCallback class which conforms to the necessary callbacks of IdCloud FIDO SDK
-        /* 1 */
-        ## Set up the necessary UI callbacks ##
-
-        authenticateObj = new Authenticate(getActivity(), Configuration.url, uiCallbacks);
+        Authenticate authenticateObj = new Authenticate(getActivity(), Configuration.url);
         authenticateObj.execute(listener);
     }
 

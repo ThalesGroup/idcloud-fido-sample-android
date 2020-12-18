@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientConfig;
-import com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui.EnrollActivity;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.EnrollActivity;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.MainViewActivity;
 import com.thalesgroup.gemalto.securelog.SecureLogConfig;
 import com.thalesgroup.gemalto.securelog.SecureLogLevel;
@@ -23,10 +23,6 @@ public class MainActivity extends AppCompatActivity {
         SecureLogConfig secureLogConfig = new SecureLogConfig.Builder(getApplicationContext())
                 .publicKey(Configuration.secureLogPublicKeyModulus, Configuration.secureLogPublicKeyExponent)
                 .fileID("sample")
-                .level(SecureLogLevel.ALL)
-                .rollingFileMaxCount(10)
-                .rollingFileMaxSizeInKB(100)
-                .directory(getApplicationContext().getExternalFilesDir(null))
                 .build();
 
         SecureLogArchive.mSecureLog = IdCloudClient.configureSecureLog(secureLogConfig);

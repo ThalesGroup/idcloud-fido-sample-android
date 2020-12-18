@@ -1,4 +1,4 @@
-package com.thalesgroup.gemalto.idcloud.auth.sample.advanced.ui;
+package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,10 +36,10 @@ import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
-import com.thalesgroup.gemalto.idcloud.auth.sample.advanced.idcloudclient.ActivatedAuthenticators;
-import com.thalesgroup.gemalto.idcloud.auth.sample.advanced.idcloudclient.AddAuthenticator;
-import com.thalesgroup.gemalto.idcloud.auth.sample.advanced.idcloudclient.ChangePin;
-import com.thalesgroup.gemalto.idcloud.auth.sample.advanced.idcloudclient.RemoveAuthenticator;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.ActivatedAuthenticators;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.AddAuthenticator;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.ChangePin;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.RemoveAuthenticator;
 
 import java.util.List;
 

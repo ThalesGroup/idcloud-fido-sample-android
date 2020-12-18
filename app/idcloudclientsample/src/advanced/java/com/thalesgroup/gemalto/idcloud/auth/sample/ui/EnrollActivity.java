@@ -1,4 +1,4 @@
-package com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.ui;
+package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,21 +16,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
-import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thales.dis.mobile.idcloud.authui.util.DialogUtils;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BuildConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SecureLogArchive;
-import com.thalesgroup.gemalto.idcloud.auth.sample.gettingstarted.idcloudclient.Enroll;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Enroll;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.MainViewActivity;
 
 import java.io.File;
 
 public class EnrollActivity extends AppCompatActivity {
-
-    private Enroll enrollObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,16 +96,7 @@ public class EnrollActivity extends AppCompatActivity {
         // Initialize an instance of the Enroll use-case, providing
         // (1) the retrieved code
         // (2) the pre-configured URL
-        // (3) the uiCallbacks
-
-        FragmentManager fragmentManager = EnrollActivity.this.getSupportFragmentManager();
-
-        // Set up an instance of UiCallbacks, an encapsulated class containing all necessary UI callbacks required by IdCloud FIDO SDK.
-        // As a means of convenience, the IdCloud FIDO UI SDK provides a SampleSecurePinUiCallback,SampleCommonUiCallback class which conforms to the necessary callbacks of IdCloud FIDO SDK
-        /* 1 */
-        ## Set up the necessary UI callbacks ##
-
-        enrollObj = new Enroll(EnrollActivity.this, registrationCode, Configuration.url, uiCallbacks);
+        Enroll enrollObj = new Enroll(EnrollActivity.this, registrationCode, Configuration.url);
         enrollObj.execute(listener);
     }
 
