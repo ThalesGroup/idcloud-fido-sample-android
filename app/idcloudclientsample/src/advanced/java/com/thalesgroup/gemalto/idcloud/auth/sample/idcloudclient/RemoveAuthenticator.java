@@ -14,7 +14,7 @@ import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.operation.RemoveAuthenticatorRequestCallback;
 import com.thales.dis.mobile.idcloud.auth.operation.RemoveAuthenticatorResponse;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticatorsFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 
 public class RemoveAuthenticator  {
@@ -31,7 +31,7 @@ public class RemoveAuthenticator  {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(AuthenticatorsFragment.OnExecuteFinishListener listener) {
+    public void execute(OnExecuteFinishListener listener) {
 
         Progress.showProgress(activity, IdCloudProgress.START);
 

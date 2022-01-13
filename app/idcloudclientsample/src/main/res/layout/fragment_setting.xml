@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="405dp"
+        android:layout_height="90dp"
+        android:background="@null">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/title_settings"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+    </androidx.appcompat.widget.Toolbar>
+    <!--Require ViewGroup for PreferenceFragmentCompat-->
+    <FrameLayout
+        android:id="@android:id/list_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:targetApi="n" />
+</LinearLayout>

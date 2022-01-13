@@ -1,7 +1,9 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,16 +15,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.authui.util.DialogUtils;
-import com.thalesgroup.gemalto.idcloud.auth.sample.BuildConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SecureLogArchive;
-import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Enroll;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.MainViewActivity;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.EnrollWithPush;
+import com.thalesgroup.gemalto.idcloud.auth.sample.util.DialogUtil;
 
 import java.io.File;
 
@@ -33,8 +33,8 @@ public class EnrollActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enroll);
 
-        Button btn_enroll = (Button)findViewById(R.id.button_Enroll);
-        TextView textView =(TextView)findViewById(R.id.textView_enroll);
+        Button btn_enroll = (Button) findViewById(R.id.button_Enroll);
+        TextView textView = (TextView) findViewById(R.id.textView_enroll);
 
         btn_enroll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,22 +45,14 @@ public class EnrollActivity extends AppCompatActivity {
                     @Override
                     public void onClickOK(String registrationCode) {
                         //Execute enroll use-case
-                        executeEnroll(registrationCode, new OnExecuteFinishListener() {
-                            @Override
-                            public void onSuccess() {
-                                showAlertDialog(getString(R.string.enroll_alert_title),getString(R.string.enroll_alert_message));
-                            }
-                            @Override
-                            public void onError(IdCloudClientException e) {
-                                showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
-                            }
-                        });
+                        //1.show dialog to ask user whether enroll with push noti or not
+                        showEnablePushNotiAlertDialog(getString(R.string.alert_push_noti_title), getString(R.string.alert_push_noti_message), registrationCode);
                     }
                 });
             }
         });
 
-        ImageButton btn_share =(ImageButton)findViewById(R.id.imageButton_shareInEnroll);
+        ImageButton btn_share = (ImageButton) findViewById(R.id.imageButton_shareInEnroll);
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,39 +84,73 @@ public class EnrollActivity extends AppCompatActivity {
     }
 
 
-    private void executeEnroll(String registrationCode,final OnExecuteFinishListener listener) {
-        // Initialize an instance of the Enroll use-case, providing
+    private void executeEnroll(String registrationCode, final OnExecuteFinishListener listener) {
+        // Initialize an instance of the EnrollWithPush use-case, providing
         // (1) the retrieved code
         // (2) the pre-configured URL
-        Enroll enrollObj = new Enroll(EnrollActivity.this, registrationCode, Configuration.url);
+        EnrollWithPush enrollObj = new EnrollWithPush(EnrollActivity.this, registrationCode, Configuration.url);
         enrollObj.execute(listener);
     }
 
-    public interface OnExecuteFinishListener {
-        void onSuccess();
-        void onError(IdCloudClientException e);
-    }
-
-    protected void showAlertDialog(final String title, final String message) {
+    protected void showEnablePushNotiAlertDialog(final String title, final String message, final String registrationCode) {
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                SharedPreferences pushNotiEnableSharedPref = getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pushNotiEnableSharedPref.edit();
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(EnrollActivity.this)
                         .setTitle(title)
                         .setMessage(message)
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editor.putBoolean(getString(R.string.enable_push_noti_key), false);
+                                editor.apply();
+                                dialog.dismiss();
+                                callExecuteEnroll(registrationCode);
+                            }
+                        })
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                if(title.equals(getString(R.string.enroll_alert_title))) {
-                                    Intent intent = new Intent(EnrollActivity.this, MainViewActivity.class);
-                                    EnrollActivity.this.startActivity(intent);
-                                }
+                            public void onClick(DialogInterface dialog, int i) {
+                                editor.putBoolean(getString(R.string.enable_push_noti_key), true);
+                                editor.apply();
+                                dialog.dismiss();
+                                callExecuteEnroll(registrationCode);
                             }
                         });
+
 
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.show();
+            }
+        });
+    }
+
+    private void callExecuteEnroll(String registrationCode) {
+        executeEnroll(registrationCode, new OnExecuteFinishListener() {
+            @Override
+            public void onSuccess() {
+                DialogUtil.showAlertDialog(EnrollActivity.this, getString(R.string.enroll_alert_title), getString(R.string.enroll_alert_message), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(EnrollActivity.this, MainViewActivity.class);
+                        EnrollActivity.this.startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(IdCloudClientException e) {
+                DialogUtil.showAlertDialog(EnrollActivity.this, getString(R.string.alert_error_title), e.getLocalizedMessage(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
     }

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/title_padding"
+        android:text="@string/title_txn_details"
+        android:textColor="@android:color/black"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/txt_transaction_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/transaction_msg_margin"
+        android:layout_marginRight="@dimen/transaction_msg_margin"
+        android:layout_marginBottom="@dimen/transaction_msg_margin"
+        android:gravity="center"
+        android:text="@string/txn_detail_message"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/txt_transaction_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/transaction_msg_margin"
+        android:layout_marginRight="@dimen/transaction_msg_margin"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+    <TextView
+        android:id="@+id/txt_transaction_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/transaction_msg_margin"
+        android:layout_marginRight="@dimen/transaction_msg_margin"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <View
+        android:id="@+id/view_48dp"
+        android:layout_width="@dimen/view_dimen_ignore"
+        android:layout_height="30dp" />
+
+    <RelativeLayout
+        android:id="@+id/button_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white">
+
+        <Button
+            android:id="@+id/btn_transaction_cancel"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="@dimen/button_margin"
+            android:layout_marginTop="@dimen/button_margin"
+            android:layout_marginRight="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:text="@string/title_cancel"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_sign_transaction_proceed"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginLeft="@dimen/button_margin"
+            android:layout_marginTop="@dimen/button_margin"
+            android:layout_marginRight="@dimen/button_margin"
+            android:layout_marginBottom="@dimen/button_margin"
+            android:text="@string/btn_title_proceed"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
+    </RelativeLayout>
+</LinearLayout>

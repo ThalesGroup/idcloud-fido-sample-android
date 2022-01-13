@@ -1,9 +1,9 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
 import androidx.fragment.app.FragmentActivity;
+
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
-
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.operation.UnenrollRequestCallback;
@@ -11,7 +11,7 @@ import com.thales.dis.mobile.idcloud.auth.operation.UnenrollResponse;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SamplePersistence;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticateHomeFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 public class Unenroll  {
 
@@ -24,7 +24,7 @@ public class Unenroll  {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(AuthenticateHomeFragment.OnExecuteFinishListener listener) {
+    public void execute(OnExecuteFinishListener listener) {
 
         Progress.showProgress(activity, IdCloudProgress.START);
 

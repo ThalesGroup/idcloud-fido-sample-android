@@ -11,7 +11,7 @@ import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticatorsFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 
 public class ChangePin  {
@@ -28,7 +28,7 @@ public class ChangePin  {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(AuthenticatorsFragment.OnExecuteFinishListener listener) {
+    public void execute(OnExecuteFinishListener listener) {
         //Set changePin request callback
         final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
         ChangePinRequestCallback changePinRequestCallback = new ChangePinRequestCallback() {

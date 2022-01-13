@@ -9,6 +9,11 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:alertDialogStyle">@style/CustomProgressDialogStyle</item>
         <item name="android:textColorPrimary">@color/black</item>
+        <item name="preferenceTheme">@style/AppTheme.PreferenceThemeOverlay</item>
+    </style>
+
+    <style name="AppTheme.PreferenceThemeOverlay" parent="@style/PreferenceThemeOverlay">
+        <item name="android:layout">@layout/fragment_setting</item>
     </style>
 
     <style name="CustomProgressDialogStyle">
