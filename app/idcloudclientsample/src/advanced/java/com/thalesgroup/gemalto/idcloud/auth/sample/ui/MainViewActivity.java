@@ -110,7 +110,7 @@ public class MainViewActivity extends AppCompatActivity implements BottomNavigat
         processNotification.execute(new OnExecuteFinishListener() {
             @Override
             public void onSuccess() {
-                DialogUtil.showAlertDialog(MainViewActivity.this, getString(R.string.authenticate_alert_title), getString(R.string.authenticate_alert_message), new DialogInterface.OnClickListener() {
+                DialogUtil.showAlertDialog(MainViewActivity.this, getString(R.string.fetch_alert_title), getString(R.string.fetch_alert_message), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
