@@ -12,10 +12,10 @@ import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticatorsFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 
-public class AddAuthenticator  {
+public class AddAuthenticator {
 
     private FragmentActivity activity;
     private UiCallbacks uiCallbacks;
@@ -29,7 +29,7 @@ public class AddAuthenticator  {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(AuthenticatorsFragment.OnExecuteFinishListener listener) {
+    public void execute(OnExecuteFinishListener listener) {
 
         Progress.showProgress(activity, IdCloudProgress.START);
 

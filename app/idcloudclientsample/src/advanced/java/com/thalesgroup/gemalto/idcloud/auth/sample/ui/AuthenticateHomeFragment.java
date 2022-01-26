@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,20 +15,15 @@ import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
-import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
-import com.thalesgroup.gemalto.idcloud.auth.sample.BuildConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SecureLogArchive;
-import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Unenroll;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Authenticate;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Unenroll;
+import com.thalesgroup.gemalto.idcloud.auth.sample.util.DialogUtil;
 
 import java.io.File;
 
@@ -45,6 +39,7 @@ public class AuthenticateHomeFragment extends Fragment {
 
         TextView textView = (TextView) view.findViewById(R.id.textView_authenticate);
         Button button = (Button) view.findViewById(R.id.button_authenticate);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,17 +47,30 @@ public class AuthenticateHomeFragment extends Fragment {
                 executeAuthenticate(new OnExecuteFinishListener() {
                     @Override
                     public void onSuccess() {
-                        showAlertDialog(getString(R.string.authenticate_alert_title),getString(R.string.authenticate_alert_message));
+                        DialogUtil.showAlertDialog(getActivity(), getString(R.string.fetch_alert_title), getString(R.string.fetch_alert_message), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
                     }
+
                     @Override
                     public void onError(IdCloudClientException e) {
-                        showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
+                        if (e.getError() != IdCloudClientException.ErrorCode.USER_CANCELLED) {
+                            DialogUtil.showAlertDialog(getActivity(), getString(R.string.alert_error_title), e.getLocalizedMessage(), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                        }
                     }
                 });
             }
         });
 
-        ImageButton btn_share =(ImageButton)view.findViewById(R.id.imageButton_shareInAuthenticate);
+        ImageButton btn_share = (ImageButton) view.findViewById(R.id.imageButton_shareInAuthenticate);
         btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,11 +103,24 @@ public class AuthenticateHomeFragment extends Fragment {
                 executeUnenroll(new OnExecuteFinishListener() {
                     @Override
                     public void onSuccess() {
-                        showAlertDialog(getString(R.string.unenroll_alert_title), getString(R.string.unenroll_alert_message));
+                        DialogUtil.showAlertDialog(getActivity(), getString(R.string.unenroll_alert_title), getString(R.string.unenroll_alert_message), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(getActivity(), EnrollActivity.class);
+                                getActivity().startActivity(intent);
+                            }
+                        });
                     }
+
                     @Override
                     public void onError(IdCloudClientException e) {
-                        showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
+                        DialogUtil.showAlertDialog(getActivity(), getString(R.string.alert_error_title), e.getLocalizedMessage(), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+
                     }
                 });
             }
@@ -121,14 +142,14 @@ public class AuthenticateHomeFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    private void executeAuthenticate(final AuthenticateHomeFragment.OnExecuteFinishListener listener) {
+    private void executeAuthenticate(final OnExecuteFinishListener listener) {
         // Initialize an instance of the Authenticate use-case, providing
         // (1) the pre-configured URL
         Authenticate authenticateObj = new Authenticate(getActivity(), Configuration.url);
         authenticateObj.execute(listener);
     }
 
-    private void executeUnenroll(final AuthenticateHomeFragment.OnExecuteFinishListener listener) {
+    private void executeUnenroll(final OnExecuteFinishListener listener) {
         // Initialize an instance of the Unenroll use-case, providing
         // (1) the pre-configured URL
 
@@ -136,33 +157,5 @@ public class AuthenticateHomeFragment extends Fragment {
         unenrollObj.execute(listener);
     }
 
-    public interface OnExecuteFinishListener {
-        void onSuccess();
-        void onError(IdCloudClientException e);
-    }
 
-    protected void showAlertDialog(final String title, final String message) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AuthenticateHomeFragment.this.getContext())
-                        .setTitle(title)
-                        .setMessage(message)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                if (title.equals(getString(R.string.unenroll_alert_title))) {
-                                    Intent intent = new Intent(getActivity(), EnrollActivity.class);
-                                    getActivity().startActivity(intent);
-                                }
-
-                            }
-                        });
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.setCanceledOnTouchOutside(false);
-                alertDialog.show();
-            }
-        });
-    }
 }

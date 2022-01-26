@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.thales.dis.mobile.idcloud.auth.Authenticator;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
@@ -258,7 +257,7 @@ public class AuthenticatorsFragment extends Fragment {
         requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
-    private void executeChangePin(final AuthenticatorsFragment.OnExecuteFinishListener listener) {
+    private void executeChangePin(final OnExecuteFinishListener listener) {
         // Initialize an instance of the Add Authenticate use-case, providing
         // (1) the pre-configured URL
         // (2) the pinPadUiDelegate
@@ -271,7 +270,7 @@ public class AuthenticatorsFragment extends Fragment {
         changPinObj.execute(listener);
     }
 
-    private void executeAddAuthenticator(final AuthenticatorsFragment.OnExecuteFinishListener listener) {
+    private void executeAddAuthenticator(final OnExecuteFinishListener listener) {
         // Initialize an instance of the Add Authenticate use-case, providing
         // (1) the pre-configured URL
         // (2) the uiCallbacks
@@ -281,6 +280,7 @@ public class AuthenticatorsFragment extends Fragment {
                 getActivity().getSupportFragmentManager(), getString(R.string.usecase_addauthenticator)
         );
         uiCallbacks.securePinPadUiCallback = securePinUiCallback;
+        uiCallbacks.biometricUiCallback = new SampleBiometricUiCallback();
         uiCallbacks.commonUiCallback = new SampleCommonUiCallback(
                 getActivity().getSupportFragmentManager()
         );
@@ -289,7 +289,7 @@ public class AuthenticatorsFragment extends Fragment {
         addAuthenticatorObj.execute(listener);
     }
 
-    private void executeRemoveAuthenticator(Authenticator authenticator, final AuthenticatorsFragment.OnExecuteFinishListener listener) {
+    private void executeRemoveAuthenticator(Authenticator authenticator, final OnExecuteFinishListener listener) {
         // Initialize an instance of the Remove Authenticate use-case, providing
         // (1) the pre-configured URL
         // (2) the authenticator to be removed
@@ -297,10 +297,6 @@ public class AuthenticatorsFragment extends Fragment {
         removeAuthenticatorObj.execute(listener);
     }
 
-    public interface OnExecuteFinishListener {
-        void onSuccess();
-        void onError(IdCloudClientException e);
-    }
 
     protected void showAlertDialog(final String title, final String message) {
         getActivity().runOnUiThread(new Runnable() {

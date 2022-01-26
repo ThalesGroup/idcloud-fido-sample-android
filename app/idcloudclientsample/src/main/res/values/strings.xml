@@ -1,11 +1,12 @@
-<resources >
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="title_activity_navigation">MainActivity</string>
     <string name="title_home">Home</string>
     <string name="title_authenticators">Authenticators</string>
+     <string name="title_settings">Settings</string>
     <string name="buttonText_enroll">Enroll</string>
-    <string name="textViewText_enroll">Please generate a QR code on Postman prior to enrollment.</string>
-    <string name="buttonText_authenticate">Authenticate</string>
-    <string name="textViewText_authenticate">Please generate an Authentication event on Postman prior to authentication.</string>
+    <string name="textViewText_enroll">Trigger mobile enrollment and scan your QR code.</string>
+    <string name="buttonText_fetch">Fetch</string>
+    <string name="textViewText_fetch">Check pending request.</string>
     <string name="buttonText_unenroll">Unenroll</string>
 
     <string name="buttonText_edit">Edit</string>
@@ -24,14 +25,16 @@
     <string name="usecase_changepin">Change Pin</string>
     <string name="usecase_addauthenticator">Add Authenticator</string>
     <string name="usecase_removeauthenticator">Remove Authenticator</string>
+    <string name="usecase_process_notification">Process Notification</string>
+
 
     <!-- Enroll   -->
     <string name="enroll_alert_title">Enrollment</string>
     <string name="enroll_alert_message">You have been successfully enrolled.</string>
 
     <!-- Authenticate   -->
-    <string name="authenticate_alert_title">Authentication</string>
-    <string name="authenticate_alert_message">You have been successfully authenticated.</string>
+    <string name="fetch_alert_title">Fetch</string>
+    <string name="fetch_alert_message">You have been successfully verified.</string>
 
     <!-- Change Pin  -->
     <string name="changepin_alert_title">Change PIN</string>
@@ -49,6 +52,12 @@
     <string name="unenroll_alert_title">Unenroll</string>
     <string name="unenroll_alert_message">You have been unenrolled.</string>
 
+    <!--Refresh PushToken -->
+    <string name="refresh_push_alert_title">Refresh Push Token</string>
+    <string name="refresh_push_success"> "You have successfully refreshed the device push token" </string>
+    <string name="refresh_push_fail"> "Failed to refresh device push token" </string>
+    <string name="enable_push_notification_from_setting_error"> Ensure that Push Notifications are enabled via the System Settings.</string>
+    <string name="enable_push_noti_key">enable_push_noti</string>
     <!-- Progress -->
     <string name="progress_start">Executing</string>
     <string name="progress_sending_request">Sending request</string>
@@ -60,5 +69,22 @@
     <!-- Share SecureLog -->
     <string name="secureLog_email_content">Hi Thales Fido team,\n\nThe Sample application is failing.\nPlease check more detail in the attached log file.\n\nRegards,</string>
     <string name="securelog_chooser_title">Select an Email application to send the Logs</string>
+
+
+    <string name="sdk_version">Version</string>
+    <string name="key_sdk_version">key_sdk_version</string>
+
+    <!-- Refresh Push Notification Token Preferences -->
+    <string name="push_notification">Push Notifications</string>
+    <string name="key_refresh_push_token">key_refresh_token</string>
+    <string name="device_push_token">Refresh Push Token</string>
+    <string name="alert_push_noti_title"> "IdCloud FIDO" Would Like to Send You Notifications</string>
+    <string name="alert_push_noti_message">Notifications may include alerts, sounds and icon badges. These can be configured in Settings</string>
+    <string name="title_txn_details">Transaction Details</string>
+    <string name="txn_detail_message">Please confirm the following operation:</string>
+    <string name="btn_title_proceed">Proceed</string>
+    <string name="sign_alert_message">Transfer <xliff:g id="amount">%s</xliff:g> from <xliff:g id="from">%s</xliff:g> To <xliff:g id="to">%s</xliff:g>.</string>
+    <string name="sign_alert_date"><xliff:g id="date">%s</xliff:g></string>
+
 
 </resources>

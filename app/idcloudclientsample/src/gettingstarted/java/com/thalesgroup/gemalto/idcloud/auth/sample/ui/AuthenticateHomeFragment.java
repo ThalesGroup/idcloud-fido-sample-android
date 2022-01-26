@@ -49,7 +49,7 @@ public class AuthenticateHomeFragment extends Fragment {
                 executeAuthenticate(new OnExecuteFinishListener() {
                     @Override
                     public void onSuccess() {
-                        showAlertDialog(getString(R.string.authenticate_alert_title),getString(R.string.authenticate_alert_message));
+                        showAlertDialog(getString(R.string.fetch_alert_title),getString(R.string.fetch_alert_message));
                     }
                     @Override
                     public void onError(IdCloudClientException e) {

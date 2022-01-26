@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+android:title="@string/title_settings">
+ <PreferenceCategory
+    android:title="@string/sdk_version">
+        <Preference
+            android:key="@string/key_sdk_version"
+            android:title="2.1.0"
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/push_notification">
+        <Preference
+            android:key="@string/key_refresh_push_token"
+            android:title="@string/device_push_token" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

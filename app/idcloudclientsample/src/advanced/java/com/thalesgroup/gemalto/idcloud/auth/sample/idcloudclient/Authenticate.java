@@ -11,17 +11,18 @@ import com.thales.dis.mobile.idcloud.auth.operation.FetchRequestCallback;
 import com.thales.dis.mobile.idcloud.auth.operation.FetchResponse;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticateHomeFragment;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.CustomAppClientConformerCallback;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 public class Authenticate {
 
-    private FragmentActivity activity;
-    private IdCloudClient idCloudClient;
+    private final FragmentActivity activity;
+    private final IdCloudClient idCloudClient;
 
     public Authenticate(FragmentActivity activity, String url) {
         this.activity = activity;
@@ -30,7 +31,7 @@ public class Authenticate {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(AuthenticateHomeFragment.OnExecuteFinishListener listener) {
+    public void execute(OnExecuteFinishListener listener) {
 
         Progress.showProgress(activity, IdCloudProgress.START);
 
@@ -46,8 +47,9 @@ public class Authenticate {
                         fragmentManager, activity.getString(R.string.usecase_fetch)
                 );
                 uiCallbacks.securePinPadUiCallback = securePinUiCallback;
-                uiCallbacks.commonUiCallback = new SampleCommonUiCallback(
-                        fragmentManager
+                uiCallbacks.biometricUiCallback = new SampleBiometricUiCallback();
+                uiCallbacks.commonUiCallback = new CustomAppClientConformerCallback(
+                        activity, fragmentManager
                 );
 
                 //Set fetch request callbacks
@@ -76,7 +78,7 @@ public class Authenticate {
                 // Create an instance of the Fetch request.
                 // Instances of requests should be held as an instance variable to ensure that callbacks will function as expected and to prevent unexpected behaviour.
                 FetchRequest fetchRequest = idCloudClient.createFetchRequest(uiCallbacks,
-                                                                             fetchRequestCallback);
+                        fetchRequestCallback);
                 //Execute request
                 fetchRequest.execute();
             }
