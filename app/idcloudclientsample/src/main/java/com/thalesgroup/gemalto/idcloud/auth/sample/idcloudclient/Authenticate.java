@@ -1,68 +1,63 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
+import com.thales.dis.mobile.idcloud.auth.operation.FetchRequest;
+import com.thales.dis.mobile.idcloud.auth.operation.FetchRequestCallback;
+import com.thales.dis.mobile.idcloud.auth.operation.FetchResponse;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
-import com.thales.dis.mobile.idcloud.auth.operation.ProcessNotificationRequestCallback;
-import com.thales.dis.mobile.idcloud.auth.operation.ProcessNotificationResponse;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.CustomAppClientConformerCallback;
 
-import java.util.Map;
-
-public class ProcessNotification {
+public class Authenticate {
 
     private FragmentActivity activity;
     private IdCloudClient idCloudClient;
-    private Map<String, String> notification;
 
-    public ProcessNotification(FragmentActivity activity, String url, Map<String, String> notification) {
+    public Authenticate(FragmentActivity activity, String url) {
         this.activity = activity;
-        idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
-        this.notification = notification;
+
+        // Initialize an instance of IdCloudClient.
+        this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
     public void execute(OnExecuteFinishListener<Void> listener) {
         Progress.showProgress(activity, IdCloudProgress.START);
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        // Set up an instance of UiCallbacks, an encapsulated class containing all necessary UI callbacks required by IdCloud FIDO SDK.
+        // As a means of convenience, the IdCloud FIDO UI SDK provides a SampleSecurePinUiCallback,SampleCommonUiCallback class which conforms to the necessary callbacks of IdCloud FIDO SDK
         UiCallbacks uiCallbacks = new UiCallbacks();
-
-        //  PASSCODE
         SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
-                fragmentManager, activity.getString(R.string.usecase_process_notification)
+                fragmentManager, activity.getString(R.string.usecase_fetch)
         );
         uiCallbacks.securePinPadUiCallback = securePinUiCallback;
-
-        // BIOMETRIC
         uiCallbacks.biometricUiCallback = new SampleBiometricUiCallback();
-
-        //  COMMON
-        uiCallbacks.commonUiCallback = new CustomAppClientConformerCallback(
-                activity, fragmentManager
+        uiCallbacks.commonUiCallback = new SampleCommonUiCallback(
+                fragmentManager
         );
 
-        SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(fragmentManager);
-        ProcessNotificationRequestCallback processNotificationRequestCallback = new ProcessNotificationRequestCallback() {
+        //Set fetch request callbacks
+        final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(fragmentManager);
+        FetchRequestCallback fetchRequestCallback = new FetchRequestCallback() {
             @Override
-            public void onSuccess(@NonNull ProcessNotificationResponse response) {
+            public void onSuccess(FetchResponse fetchResponse) {
                 sampleResponseCallback.onSuccess();
                 listener.onSuccess(null);
             }
 
             @Override
-            public void onError(@NonNull IdCloudClientException exception) {
+            public void onError(IdCloudClientException e) {
                 sampleResponseCallback.onError();
-                listener.onError(exception);
+                listener.onError(e);
             }
 
             @Override
@@ -75,11 +70,12 @@ public class ProcessNotification {
             }
         };
 
-        idCloudClient.createProcessNotificationRequest(
-                notification,
-                uiCallbacks,
-                processNotificationRequestCallback).execute();
-
+        // Create an instance of the Fetch request.
+        // Instances of requests should be held as an instance variable to ensure that callbacks will function as expected and to prevent unexpected behaviour.
+        FetchRequest fetchRequest = idCloudClient.createFetchRequest(uiCallbacks,
+                fetchRequestCallback);
+        //Execute request
+        fetchRequest.execute();
     }
 
 }

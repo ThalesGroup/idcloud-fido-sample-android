@@ -1,6 +1,5 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -11,22 +10,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.thales.dis.mobile.idcloud.auth.Authenticator;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
@@ -38,21 +32,21 @@ import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.ActivatedAuthenticators;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.AddAuthenticator;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.ChangePin;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.OnExecuteFinishListener;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.RemoveAuthenticator;
-
-import java.util.List;
+import com.thalesgroup.gemalto.idcloud.auth.sample.util.DialogUtil;
 
 
 public class AuthenticatorsFragment extends Fragment {
 
-    private SwipeMenuListView mListView;
+    private SwipeMenuListView listView;
     private CustomAdapter adapter;
-    private List<Authenticator> authenticators;
+    private Authenticator[] authenticators = new Authenticator[0];
 
     private ChangePin changPinObj;
     private AddAuthenticator addAuthenticatorObj;
     private RemoveAuthenticator removeAuthenticatorObj;
-    private static ActivatedAuthenticators activatedAuthenticators = null;
+    private ActivatedAuthenticators activatedAuthenticatorsObj;
     private Button deleteButton;
     private Button editButton;
 
@@ -60,123 +54,61 @@ public class AuthenticatorsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_authenticators, container, false);
-
-        Button addButton = (Button)view.findViewById(R.id.button_add);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Execute the add authenticator use-case.
-                executeAddAuthenticator(new OnExecuteFinishListener() {
-                    @Override
-                    public void onSuccess() {
-                        showAlertDialog(getString(R.string.addauthenticator_alert_title),getString(R.string.addauthenticator_message));
-                    }
-                    @Override
-                    public void onError(IdCloudClientException e) {
-                        showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
-                    }
-                });
-            }
-        });
-
-        deleteButton = (Button)view.findViewById(R.id.button_delete);
-        deleteButton.setVisibility(View.GONE);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-        mListView = (SwipeMenuListView) view.findViewById(R.id.listView_authenticatos);
-
-        // Set up an instance of the ActivatedAuthenticators use-case to retreive a list of registered authenticators.
-        if (activatedAuthenticators == null) {
-            activatedAuthenticators = new ActivatedAuthenticators(getActivity(), Configuration.url);
-        }
-        authenticators = activatedAuthenticators.execute();
-
-        String[] textString = new String[authenticators.size()];
-        int[] drawableIds = new int[authenticators.size()]; ;
-
-        for (int i=0; i<authenticators.size(); i++) {
-            switch (authenticators.get(i).getType()) {
-                case PIN:
-                    textString[i] = getString(R.string.title_pin_authenticator);
-                    drawableIds[i] = R.drawable.ic_dialpad;
-                    break;
-                case BIOMETRIC:
-                    textString[i] = getString(R.string.title_biometric_authenticator);
-                    drawableIds[i] = R.drawable.ic_fingerprint;
-                    break;
-                case EMBEDDED:
-                    textString[i] = getString(R.string.title_system_embeded_authenticator);
-                    drawableIds[i] = R.drawable.ic_fingerprint;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        adapter = new CustomAdapter(getActivity(), textString, drawableIds);
-        mListView.setAdapter(adapter);
-
-        registerForContextMenu(mListView);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        OnExecuteFinishListener<Void> addListener = new OnExecuteFinishListener<Void>() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onSuccess(Void ignored) {
+                DialogUtil.showToastMessage(getActivity(), getString(R.string.addauthenticator_message));
+                //refresh ui after add auth
+                refreshAuthenticators();
+            }
 
-                //Check if on click on Pin Authenticator, provide the dialog to use to change pin.
-                if (authenticators.get((int)l).getType()== Authenticator.Type.PIN) {
-                    BottomSheetDialog mBottomDialogNotificationAction;
-                    View sheetView = getActivity().getLayoutInflater().inflate(R.layout.dialog_changepin, null);
-                    mBottomDialogNotificationAction = new BottomSheetDialog(getActivity());
-                    mBottomDialogNotificationAction.setContentView(sheetView);
-                    mBottomDialogNotificationAction.show();
-
-                    View button_changpin = sheetView.findViewById(R.id.button_changpin);
-                    button_changpin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onError(IdCloudClientException e) {
+                if (e.getError() != IdCloudClientException.ErrorCode.USER_CANCELLED) {
+                    DialogUtil.showAlertDialog(getActivity(), getString(R.string.alert_error_title), e.getLocalizedMessage(), new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(View view) {
-                            mBottomDialogNotificationAction.dismiss();
-                            //ChangePin
-                            executeChangePin(new OnExecuteFinishListener() {
-                                @Override
-                                public void onSuccess() {
-                                    showAlertDialog(getString(R.string.changepin_alert_title), getString(R.string.changepin_alert_message));
-                                }
-                                @Override
-                                public void onError(IdCloudClientException e) {
-                                    showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
-                                }
-                            });
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
                         }
                     });
-                    View button_cancal = sheetView.findViewById(R.id.button_cancel);
-                    button_cancal.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            mBottomDialogNotificationAction.dismiss();
-                        }
-                    });
-
-                    // Remove default white color background
-                    FrameLayout bottomSheet = (FrameLayout) mBottomDialogNotificationAction.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-                    bottomSheet.setBackground(null);
                 }
+            }
+        };
+
+        Button addButton = (Button) view.findViewById(R.id.button_add);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Execute the add authenticator use-case.
+                executeAddAuthenticator(addListener);
             }
         });
 
+        deleteButton = (Button) view.findViewById(R.id.button_delete);
+        deleteButton.setVisibility(View.GONE);
+
+        listView = (SwipeMenuListView) view.findViewById(R.id.listView_authenticatos);
+
+        registerForContextMenu(listView);
+
+        adapter = new CustomAdapter(authenticators);
+        listView.setAdapter(adapter);
+        initChangePinClickListener();
+        refreshAuthenticators();
+
         // create a MenuCreator
         SwipeMenuCreator creator = new SwipeMenuCreator() {
-
             @Override
             public void create(SwipeMenu menu) {
                 // create "delete" item
-                SwipeMenuItem deleteItem = new SwipeMenuItem(
-                        getActivity().getApplicationContext());
+                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity());
                 // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
+                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
                 // set item width
                 deleteItem.setWidth(170);
                 // set a icon
@@ -184,77 +116,128 @@ public class AuthenticatorsFragment extends Fragment {
                 // add to menu
                 menu.addMenuItem(deleteItem);
             }
-
         };
         // set creator
-        mListView.setMenuCreator(creator);
+        listView.setMenuCreator(creator);
+
+
+        OnExecuteFinishListener<Void> removeListener = new OnExecuteFinishListener<Void>() {
+            @Override
+            public void onSuccess(Void ignored) {
+                initChangePinClickListener();
+                DialogUtil.showToastMessage(getActivity(), getString(R.string.removeauthenticator_alert_message));
+                refreshAuthenticators();
+            }
+
+            @Override
+            public void onError(IdCloudClientException e) {
+                initChangePinClickListener();
+                if (e.getError() != IdCloudClientException.ErrorCode.USER_CANCELLED) {
+                    DialogUtil.showAlertDialog(getActivity(), getString(R.string.alert_error_title), e.getLocalizedMessage(), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            }
+        };
 
         // listener item click event on swipe delete button
-        mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+        listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
                 //Execute the Remove authenticator use-case
-                executeRemoveAuthenticator(authenticators.get(position), new OnExecuteFinishListener() {
-                    @Override
-                    public void onSuccess() {
-                        showAlertDialog(getString(R.string.removeauthenticator_alert_title), getString(R.string.removeauthenticator_alert_message));
-                    }
-                    @Override
-                    public void onError(IdCloudClientException e) {
-                        showAlertDialog(getString(R.string.alert_error_title),e.getLocalizedMessage());
-                    }
-                });
+                executeRemoveAuthenticator(authenticators[position], removeListener);
                 return false;
             }
         });
 
-        editButton = (Button)view.findViewById(R.id.button_edit);
+        editButton = (Button) view.findViewById(R.id.button_edit);
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 editButton.setVisibility(View.GONE);
                 deleteButton.setVisibility(View.VISIBLE);
 
-                mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
-                        mListView.getChildAt(i).setBackgroundColor(Color.LTGRAY);
+                        for (int i = 0; i < listView.getChildCount(); i++) {
+                            if (i == position) {
+                                listView.getChildAt(i).setBackgroundColor(Color.LTGRAY);
+                            } else  {
+                                listView.getChildAt(i).setBackgroundColor(Color.WHITE);
+                            }
+                        }
 
                         deleteButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                executeRemoveAuthenticator(authenticators.get((int) l), new OnExecuteFinishListener() {
-                                    @Override
-                                    public void onSuccess() {
-                                        showAlertDialog(getString(R.string.removeauthenticator_alert_title), getString(R.string.removeauthenticator_alert_message));
-                                    }
-                                    @Override
-                                    public void onError(IdCloudClientException e) {
-                                        showAlertDialog(getString(R.string.alert_error_title), e.getLocalizedMessage());
-                                    }
-                                });
+                                executeRemoveAuthenticator(authenticators[position], removeListener);
                             }
-                       });
+                        });
                     }
                 });
             }
         });
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // This callback will only be called when MyFragment is at least Started.
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+    private void initChangePinClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void handleOnBackPressed() {
-                // Handle the back button event
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                //Check if on click on Pin Authenticator, provide the dialog to use to change pin.
+                if (authenticators[position].getType() == Authenticator.Type.PIN) {
+                    DialogUtil.showAlertDialogWithCancel(getActivity(), getString(R.string.title_changepin), null,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    executeChangePin(new OnExecuteFinishListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void ignored) {
+                                            DialogUtil.showToastMessage(getActivity(), getString(R.string.changepin_alert_message));
+                                        }
+
+                                        @Override
+                                        public void onError(IdCloudClientException e) {
+                                            if (e.getError() != IdCloudClientException.ErrorCode.USER_CANCELLED) {
+                                                DialogUtil.showAlertDialog(getActivity(), getString(R.string.alert_error_title), e.getLocalizedMessage(), new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            }, null);
+                }
             }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        });
+    }
+
+    private void refreshAuthenticators() {
+        if (activatedAuthenticatorsObj == null) {
+            activatedAuthenticatorsObj = new ActivatedAuthenticators(getActivity(), Configuration.url);
+        }
+        activatedAuthenticatorsObj.execute(new OnExecuteFinishListener<Authenticator[]>() {
+            @Override
+            public void onSuccess(Authenticator[] result) {
+                authenticators = result;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.refresh(result);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(IdCloudClientException ignored) { }
+        });
     }
 
     private void executeChangePin(final OnExecuteFinishListener listener) {
@@ -297,56 +280,26 @@ public class AuthenticatorsFragment extends Fragment {
         removeAuthenticatorObj.execute(listener);
     }
 
-
-    protected void showAlertDialog(final String title, final String message) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // Reload fragment to refresh authenticator list
-                final FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.detach(AuthenticatorsFragment.this).attach(AuthenticatorsFragment.this).commit();
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AuthenticatorsFragment.this.getContext())
-                        .setTitle(title)
-                        .setMessage(message)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-
-                                if(title == getString(R.string.removeauthenticator_alert_title)) {
-                                    deleteButton.setVisibility(View.GONE);
-                                    editButton.setVisibility(View.VISIBLE);
-                                }
-                            }
-                        });
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.setCanceledOnTouchOutside(false);
-                alertDialog.show();
-            }
-        });
-
-    }
-
     // CustomAdapter class for list authenticators view
     public class CustomAdapter extends BaseAdapter {
 
-        private Context mContext;
-        private String[]  Title;
-        private int[] imge;
+        private Authenticator[] authenticators;
 
-        public CustomAdapter(Context context, String[] text1,int[] imageIds) {
-            mContext = context;
-            Title = text1;
-            imge = imageIds;
+        public CustomAdapter(Authenticator[] authenticators) {
+            this.authenticators = authenticators;
+        }
+
+        public void refresh(Authenticator[] authenticators) {
+            this.authenticators = authenticators;
+            notifyDataSetChanged();
         }
 
         public int getCount() {
-            return Title.length;
+            return authenticators.length;
         }
 
-        public Object getItem(int arg0) {
-            return null;
+        public Object getItem(int position) {
+            return authenticators[position];
         }
 
         public long getItemId(int position) {
@@ -354,18 +307,35 @@ public class AuthenticatorsFragment extends Fragment {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-
             LayoutInflater inflater = getLayoutInflater();
-            View row;
-            row = inflater.inflate(R.layout.list_authenticator, parent, false);
-            TextView title;
-            ImageView i1;
-            i1 = (ImageView) row.findViewById(R.id.imgIcon);
-            title = (TextView) row.findViewById(R.id.txtTitle);
-            title.setText(Title[position]);
-            i1.setImageResource(imge[position]);
+            View view;
+            if (convertView != null) {
+                view = convertView;
+            } else {
+                view = inflater.inflate(R.layout.list_authenticator, parent, false);
+            }
 
-            return (row);
+            TextView title = (TextView) view.findViewById(R.id.txtTitle);
+            ImageView icon = (ImageView) view.findViewById(R.id.imgIcon);
+
+            Authenticator authenticator = authenticators[position];
+            switch (authenticator.getType()) {
+                case PIN:
+                    title.setText(getString(R.string.title_pin_authenticator));
+                    icon.setImageResource(R.drawable.ic_dialpad);
+                    break;
+                case BIOMETRIC:
+                    title.setText(getString(R.string.title_biometric_authenticator));
+                    icon.setImageResource(R.drawable.ic_fingerprint);
+                    break;
+                case EMBEDDED:
+                    title.setText(getString(R.string.title_system_embeded_authenticator));
+                    icon.setImageResource(R.drawable.ic_fingerprint);
+                    break;
+                default:
+                    break;
+            }
+            return view;
         }
     }
 }

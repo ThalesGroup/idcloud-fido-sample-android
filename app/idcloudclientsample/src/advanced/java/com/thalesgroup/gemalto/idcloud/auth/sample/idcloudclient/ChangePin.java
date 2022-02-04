@@ -11,7 +11,6 @@ import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 
 public class ChangePin  {
@@ -28,49 +27,37 @@ public class ChangePin  {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(OnExecuteFinishListener listener) {
+    public void execute(OnExecuteFinishListener<Void> listener) {
         //Set changePin request callback
         final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
         ChangePinRequestCallback changePinRequestCallback = new ChangePinRequestCallback() {
             @Override
             public void onSuccess(ChangePinResponse changePinResponse) {
                 sampleResponseCallback.onSuccess();
-                listener.onSuccess();
-                Progress.hideProgress();
+                listener.onSuccess(null);
             }
 
             @Override
             public void onError(IdCloudClientException e) {
                 sampleResponseCallback.onError();
                 listener.onError(e);
-                Progress.hideProgress();
             }
 
             @Override
             public void onProgress(final IdCloudProgress code) {
-                switch (code) {
-                    case RETRIEVING_REQUEST:
-                    case VALIDATING_AUTHENTICATION:
-                        Progress.showProgress(activity, code);
-                        break;
-                    case PROCESSING_REQUEST:
-                    case END:
-                        Progress.hideProgress();
-                        break;
+                if (code == IdCloudProgress.END) {
+                    Progress.hideProgress();
+                } else {
+                    Progress.showProgress(activity, code);
                 }
             }
         };
 
         // Create Change pin request with callbacks
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                idCloudClient.createChangePinRequest(
-                        securePinPadUiCallback,
-                        changePinRequestCallback
-                ).execute();
-            }
-        }).start();
+        idCloudClient.createChangePinRequest(
+                securePinPadUiCallback,
+                changePinRequestCallback
+        ).execute();
     }
 
 }

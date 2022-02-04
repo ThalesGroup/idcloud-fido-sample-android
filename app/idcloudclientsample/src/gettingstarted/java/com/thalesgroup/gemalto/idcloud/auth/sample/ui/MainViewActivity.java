@@ -1,21 +1,19 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.thalesgroup.gemalto.idcloud.auth.sample.BuildConfig;
-import com.thalesgroup.gemalto.idcloud.auth.sample.R;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.AuthenticateHomeFragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-public class MainViewActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BaseActivity;
+import com.thalesgroup.gemalto.idcloud.auth.sample.R;
+
+public class MainViewActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private BottomNavigationView navigation;
 
@@ -31,6 +29,7 @@ public class MainViewActivity extends AppCompatActivity implements BottomNavigat
         navigation = findViewById(R.id.navigation);
         hideBottomNav();
         navigation.setOnNavigationItemSelectedListener(this);
+        rejectAppLinksEnrollment();
     }
 
     @Override
@@ -62,4 +61,5 @@ public class MainViewActivity extends AppCompatActivity implements BottomNavigat
     private void hideBottomNav() {
         navigation.setVisibility(View.GONE);
     }
+
 }

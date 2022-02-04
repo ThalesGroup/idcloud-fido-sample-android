@@ -12,7 +12,6 @@ import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 
 public class AddAuthenticator {
@@ -29,51 +28,34 @@ public class AddAuthenticator {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(OnExecuteFinishListener listener) {
-
+    public void execute(OnExecuteFinishListener<Void> listener) {
         Progress.showProgress(activity, IdCloudProgress.START);
-
-        new Thread(new Runnable() {
+        //create add Authenticator Request Callback
+        final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
+        AddAuthenticatorRequestCallback addAuthenticatorRequestCallback = new AddAuthenticatorRequestCallback() {
             @Override
-            public void run() {
-
-                //create add Authenticator Request Callback
-                final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
-                AddAuthenticatorRequestCallback addAuthenticatorRequestCallback = new AddAuthenticatorRequestCallback() {
-                    @Override
-                    public void onSuccess(@NonNull AddAuthenticatorResponse response) {
-                        sampleResponseCallback.onSuccess();
-                        listener.onSuccess();
-                        Progress.hideProgress();
-                    }
-
-                    @Override
-                    public void onError(@NonNull IdCloudClientException exception) {
-                        sampleResponseCallback.onError();
-                        listener.onError(exception);
-                        Progress.hideProgress();
-                    }
-
-                    @Override
-                    public void onProgress(IdCloudProgress code) {
-                        switch (code) {
-                            case START:
-                            case RETRIEVING_REQUEST:
-                            case VALIDATING_AUTHENTICATION:
-                                Progress.showProgress(activity, code);
-                                break;
-                            case PROCESSING_REQUEST:
-                            case END:
-                                Progress.hideProgress();
-                                break;
-                        }
-                    }
-                };
-                // Create Add authenticator request with callbacks and execute request
-                idCloudClient.createAddAuthenticatorRequest(uiCallbacks, addAuthenticatorRequestCallback).execute();
+            public void onSuccess(@NonNull AddAuthenticatorResponse response) {
+                sampleResponseCallback.onSuccess();
+                listener.onSuccess(null);
             }
-        }).start();
 
+            @Override
+            public void onError(@NonNull IdCloudClientException exception) {
+                sampleResponseCallback.onError();
+                listener.onError(exception);
+            }
+
+            @Override
+            public void onProgress(final IdCloudProgress code) {
+                if (code == IdCloudProgress.END) {
+                    Progress.hideProgress();
+                } else {
+                    Progress.showProgress(activity, code);
+                }
+            }
+        };
+        // Create Add authenticator request with callbacks and execute request
+        idCloudClient.createAddAuthenticatorRequest(uiCallbacks, addAuthenticatorRequestCallback).execute();
     }
 
 }

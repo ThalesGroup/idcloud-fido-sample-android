@@ -1,11 +1,9 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample;
 
-import static com.thalesgroup.gemalto.idcloud.auth.sample.ui.PushNotificationService.MAP_EXTRA_NAME;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientConfig;
@@ -13,16 +11,15 @@ import com.thalesgroup.gemalto.idcloud.auth.sample.ui.EnrollActivity;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.MainViewActivity;
 import com.thalesgroup.gemalto.securelog.SecureLogConfig;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
+
+    public static final String EXTRA_NAME_PUSH_NOTIFICATION = "MAP_EXTRA_NAME_PUSH_NOTIFICATION";
+    public static final String EXTRA_NAME_APP_LINKS_ENROLLMENT_TOKEN = "MAP_EXTRA_NAME_APP_LINKS_ENROLLMENT_TOKEN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Intent notiIntent = getIntent();
-        Bundle bundle = notiIntent.getExtras();
-
 
         //Set secure log public key. Please set it in configuration.java
         SecureLogConfig secureLogConfig = new SecureLogConfig.Builder(getApplicationContext())
@@ -35,13 +32,37 @@ public class MainActivity extends AppCompatActivity {
         //Set safetyNet Attestation Key. Please set it in configuration.java
         IdCloudClientConfig.setAttestationKey(Configuration.safetyNetAttestationKey);
 
-        Intent intent;
-        if (!SamplePersistence.getIsEnrolled(this)) {
-            intent = new Intent(MainActivity.this, EnrollActivity.class);
-        } else {
-            intent = new Intent(MainActivity.this, MainViewActivity.class);
-            intent.putExtra(MAP_EXTRA_NAME, bundle);
-        }
-        MainActivity.this.startActivity(intent);
+        handleIntent(getIntent());
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        Intent launchIntent;
+        if (!SamplePersistence.getIsEnrolled(this)) {
+            launchIntent = new Intent(MainActivity.this, EnrollActivity.class);
+
+        } else {
+            launchIntent = new Intent(MainActivity.this, MainViewActivity.class);
+        }
+
+        if (intent.getExtras() != null) {
+            launchIntent.putExtra(EXTRA_NAME_PUSH_NOTIFICATION, intent.getExtras());
+        }
+
+        if (intent.getData() != null) {
+            Uri appLinkUri = intent.getData();
+            String enrollmentToken = appLinkUri.getQueryParameter("token");
+            launchIntent.putExtra(EXTRA_NAME_APP_LINKS_ENROLLMENT_TOKEN, enrollmentToken);
+        }
+
+        startActivity(launchIntent);
+    }
+
+    @Override
+    public void onBackPressed() { }
 }

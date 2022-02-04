@@ -19,6 +19,7 @@
     <string name="title_system_embeded_authenticator">System Embedded Authenticator</string>
     <string name="toolbar_title">Authenticators</string>
     <string name="alert_error_title">Error</string>
+    <string name="alert_error_message_app_links">You are already enrolled. Please unenroll your application before clicking the new enrollment link.</string>
 
     <string name="usecase_enrollment">Enrollment</string>
     <string name="usecase_fetch">Fetch</string>
@@ -27,6 +28,8 @@
     <string name="usecase_removeauthenticator">Remove Authenticator</string>
     <string name="usecase_process_notification">Process Notification</string>
 
+    <string name="text_back_exit">Press Back again to exit</string>
+
 
     <!-- Enroll   -->
     <string name="enroll_alert_title">Enrollment</string>
@@ -34,7 +37,7 @@
 
     <!-- Authenticate   -->
     <string name="fetch_alert_title">Fetch</string>
-    <string name="fetch_alert_message">You have been successfully verified.</string>
+    <string name="fetch_alert_message">You have been successfully authenticated.</string>
 
     <!-- Change Pin  -->
     <string name="changepin_alert_title">Change PIN</string>
@@ -80,6 +83,7 @@
     <string name="device_push_token">Refresh Push Token</string>
     <string name="alert_push_noti_title"> "IdCloud FIDO" Would Like to Send You Notifications</string>
     <string name="alert_push_noti_message">Notifications may include alerts, sounds and icon badges. These can be configured in Settings</string>
+    <string name="text_push_token_failure">Failed getting FCM push token</string>
     <string name="title_txn_details">Transaction Details</string>
     <string name="txn_detail_message">Please confirm the following operation:</string>
     <string name="btn_title_proceed">Proceed</string>

@@ -20,6 +20,7 @@ import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
+import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.OnExecuteFinishListener;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.RefreshPushToken;
 import com.thalesgroup.gemalto.idcloud.auth.sample.util.DialogUtil;
 
@@ -27,8 +28,6 @@ import java.util.List;
 
 
 public class SettingsFragment extends PreferenceFragmentCompat {
-
-    private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String s) {
@@ -48,21 +47,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onResume() {
         super.onResume();
 
-        sharedPreferences = getPreferenceManager().getSharedPreferences();
+        SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
 
         findPreference(getString(R.string.key_sdk_version)).setTitle(IdCloudClient.getSDKVersion());
         findPreference(getString(R.string.key_refresh_push_token)).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                executeRefreshPushToken(new OnExecuteFinishListener() {
+                executeRefreshPushToken(new OnExecuteFinishListener<Void>() {
                     @Override
-                    public void onSuccess() {
-                        DialogUtil.showAlertDialog(getActivity(), getString(R.string.refresh_push_alert_title), getString(R.string.refresh_push_success), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                    public void onSuccess(Void ignored) {
+                        DialogUtil.showToastMessage(getActivity(), getString(R.string.refresh_push_success));
                     }
 
                     @Override

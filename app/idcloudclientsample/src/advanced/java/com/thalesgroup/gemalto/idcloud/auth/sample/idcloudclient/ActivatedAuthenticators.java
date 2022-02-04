@@ -6,11 +6,14 @@ import com.thales.dis.mobile.idcloud.auth.Authenticator;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class ActivatedAuthenticators  {
 
     private IdCloudClient idCloudClient;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public ActivatedAuthenticators(FragmentActivity activity,String url) {
 
@@ -18,10 +21,15 @@ public class ActivatedAuthenticators  {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public List<Authenticator> execute() {
-
+    public void execute(OnExecuteFinishListener<Authenticator[]> listener) {
         // Retrieve a list of previously registered authenticators. Use this list to properly manage your authenticators.
-        return idCloudClient.getActivatedAuthenticators();
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                List<Authenticator> authenticators = idCloudClient.getActivatedAuthenticators();
+                listener.onSuccess(authenticators.toArray(new Authenticator[0]));
+            }
+        });
     }
 
 }

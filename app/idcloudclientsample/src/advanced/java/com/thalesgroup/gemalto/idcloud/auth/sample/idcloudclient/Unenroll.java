@@ -11,7 +11,6 @@ import com.thales.dis.mobile.idcloud.auth.operation.UnenrollResponse;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SamplePersistence;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
 
 public class Unenroll  {
 
@@ -24,49 +23,35 @@ public class Unenroll  {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(OnExecuteFinishListener listener) {
-
+    public void execute(OnExecuteFinishListener<Void> listener) {
         Progress.showProgress(activity, IdCloudProgress.START);
-
-        new Thread(new Runnable() {
+        SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
+        UnenrollRequestCallback unenrollRequestCallback = new UnenrollRequestCallback() {
             @Override
-            public void run() {
-
-                final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
-                UnenrollRequestCallback unenrollRequestCallback = new UnenrollRequestCallback() {
-                    @Override
-                    public void onSuccess(UnenrollResponse unenrollResponse) {
-                        SamplePersistence.setIsEnrolled(activity, false);
-                        sampleResponseCallback.onSuccess();
-                        listener.onSuccess();
-                        Progress.hideProgress();
-                    }
-
-                    @Override
-                    public void onError(IdCloudClientException e) {
-                        sampleResponseCallback.onError();
-                        listener.onError(e);
-                        Progress.hideProgress();
-                    }
-
-                    @Override
-                    public void onProgress(final IdCloudProgress code) {
-                        switch (code) {
-                            case START:
-                                Progress.showProgress(activity, code);
-                                break;
-                            case PROCESSING_REQUEST:
-                            case END:
-                                Progress.hideProgress();
-                                break;
-                        }
-                    }
-                };
-
-                //Create unenroll request and execute request.
-                idCloudClient.createUnenrollRequest(unenrollRequestCallback).execute();
+            public void onSuccess(UnenrollResponse unenrollResponse) {
+                SamplePersistence.setIsEnrolled(activity, false);
+                sampleResponseCallback.onSuccess();
+                listener.onSuccess(null);
             }
-        }).start();
+
+            @Override
+            public void onError(IdCloudClientException e) {
+                sampleResponseCallback.onError();
+                listener.onError(e);
+            }
+
+            @Override
+            public void onProgress(final IdCloudProgress code) {
+                if (code == IdCloudProgress.END) {
+                    Progress.hideProgress();
+                } else {
+                    Progress.showProgress(activity, code);
+                }
+            }
+        };
+
+        //Create unenroll request and execute request.
+        idCloudClient.createUnenrollRequest(unenrollRequestCallback).execute();
     }
 
 }

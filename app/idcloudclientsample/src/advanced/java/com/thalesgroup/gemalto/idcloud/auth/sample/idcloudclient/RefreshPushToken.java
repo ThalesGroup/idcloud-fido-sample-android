@@ -1,5 +1,7 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -16,7 +18,7 @@ import com.thales.dis.mobile.idcloud.auth.operation.RefreshPushTokenRequestCallb
 import com.thales.dis.mobile.idcloud.auth.operation.RefreshPushTokenResponse;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.OnExecuteFinishListener;
+import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 
 public class RefreshPushToken {
 
@@ -28,62 +30,47 @@ public class RefreshPushToken {
         this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
-    public void execute(OnExecuteFinishListener listener) {
+    public void execute(OnExecuteFinishListener<Void> listener) {
         Progress.showProgress(activity, IdCloudProgress.START);
-        new Thread(new Runnable() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
             @Override
-            public void run() {
-                FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            public void onComplete(@NonNull Task<String> task) {
+                String pushToken = null;
+                if (task.isSuccessful()) {
+                    pushToken = task.getResult();
+                } else {
+                    Toast.makeText(activity, R.string.text_push_token_failure, Toast.LENGTH_SHORT).show();
+                }
+
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(fragmentManager);
+                RefreshPushTokenRequestCallback refreshPushTokenRequestCallback = new RefreshPushTokenRequestCallback() {
                     @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        String pushToken = "";
-                        if (task.isSuccessful()) {
-                            pushToken = task.getResult();
-                        }
-
-                        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                        final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(fragmentManager);
-                        RefreshPushTokenRequestCallback refreshPushTokenRequestCallback = new RefreshPushTokenRequestCallback() {
-                            @Override
-                            public void onSuccess(@NonNull RefreshPushTokenResponse response) {
-                                sampleResponseCallback.onSuccess();
-                                listener.onSuccess();
-                                Progress.hideProgress();
-                            }
-
-                            @Override
-                            public void onError(@NonNull IdCloudClientException exception) {
-                                sampleResponseCallback.onError();
-                                listener.onError(exception);
-                                Progress.hideProgress();
-                            }
-
-                            @Override
-                            public void onProgress(@NonNull IdCloudProgress code) {
-                                processOnProgress(code);
-                            }
-                        };
-
-                        NotificationProfile notificationProfile = new NotificationProfile(pushToken);
-                        idCloudClient.createRefreshPushTokenRequest(notificationProfile, refreshPushTokenRequestCallback).execute();
+                    public void onSuccess(@NonNull RefreshPushTokenResponse response) {
+                        sampleResponseCallback.onSuccess();
+                        listener.onSuccess(null);
                     }
-                });
-            }
-        }).start();
-    }
 
-    private void processOnProgress(IdCloudProgress code) {
-        switch (code) {
-            case START:
-            case RETRIEVING_REQUEST:
-            case VALIDATING_AUTHENTICATION:
-                Progress.showProgress(activity, code);
-                break;
-            case PROCESSING_REQUEST:
-            case END:
-                Progress.hideProgress();
-                break;
-        }
+                    @Override
+                    public void onError(@NonNull IdCloudClientException exception) {
+                        sampleResponseCallback.onError();
+                        listener.onError(exception);
+                    }
+
+                    @Override
+                    public void onProgress(final IdCloudProgress code) {
+                        if (code == IdCloudProgress.END) {
+                            Progress.hideProgress();
+                        } else {
+                            Progress.showProgress(activity, code);
+                        }
+                    }
+                };
+
+                NotificationProfile notificationProfile = new NotificationProfile(pushToken);
+                idCloudClient.createRefreshPushTokenRequest(notificationProfile, refreshPushTokenRequestCallback).execute();
+            }
+        });
     }
 
 }
