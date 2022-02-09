@@ -10,7 +10,6 @@ import android.widget.ImageButton;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.authui.util.DialogUtils;
 import com.thalesgroup.gemalto.idcloud.auth.sample.BaseActivity;
-import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.MainActivity;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.EnrollWithPush;
@@ -83,13 +82,13 @@ public class EnrollActivity extends BaseActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EnrollWithPush enrollObj = new EnrollWithPush(EnrollActivity.this, enrollmentToken, true, Configuration.url);
+                        EnrollWithPush enrollObj = new EnrollWithPush(EnrollActivity.this, enrollmentToken, true);
                         enrollObj.execute(listener);
                     }
                 }, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        EnrollWithPush enrollObj = new EnrollWithPush(EnrollActivity.this, enrollmentToken, false, Configuration.url);
+                        EnrollWithPush enrollObj = new EnrollWithPush(EnrollActivity.this, enrollmentToken, false);
                         enrollObj.execute(listener);
                     }
                 });

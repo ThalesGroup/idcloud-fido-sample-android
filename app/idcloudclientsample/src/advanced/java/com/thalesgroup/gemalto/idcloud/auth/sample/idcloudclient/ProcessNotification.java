@@ -5,7 +5,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.operation.ProcessNotificationRequestCallback;
@@ -14,6 +13,7 @@ import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BaseApplication;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.CustomAppClientConformerCallback;
@@ -22,13 +22,11 @@ import java.util.Map;
 
 public class ProcessNotification {
 
-    private FragmentActivity activity;
-    private IdCloudClient idCloudClient;
-    private Map<String, String> notification;
+    private final FragmentActivity activity;
+    private final Map<String, String> notification;
 
-    public ProcessNotification(FragmentActivity activity, String url, Map<String, String> notification) {
+    public ProcessNotification(FragmentActivity activity, Map<String, String> notification) {
         this.activity = activity;
-        idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
         this.notification = notification;
     }
 
@@ -75,11 +73,18 @@ public class ProcessNotification {
             }
         };
 
-        idCloudClient.createProcessNotificationRequest(
-                notification,
-                uiCallbacks,
-                processNotificationRequestCallback).execute();
+        BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
+            @Override
+            public void onSuccess(IdCloudClient idCloudClient) {
+                idCloudClient.createProcessNotificationRequest(
+                        notification,
+                        uiCallbacks,
+                        processNotificationRequestCallback).execute();
+            }
 
+            @Override
+            public void onError(IdCloudClientException ignored) { }
+        });
     }
 
 }

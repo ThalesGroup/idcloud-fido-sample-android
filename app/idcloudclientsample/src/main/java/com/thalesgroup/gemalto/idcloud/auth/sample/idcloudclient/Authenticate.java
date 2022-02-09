@@ -4,7 +4,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.operation.FetchRequest;
 import com.thales.dis.mobile.idcloud.auth.operation.FetchRequestCallback;
@@ -12,22 +11,20 @@ import com.thales.dis.mobile.idcloud.auth.operation.FetchResponse;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BaseApplication;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
+import com.thalesgroup.gemalto.idcloud.auth.sample.ui.CustomAppClientConformerCallback;
 
 public class Authenticate {
 
-    private FragmentActivity activity;
+    private final FragmentActivity activity;
     private IdCloudClient idCloudClient;
 
-    public Authenticate(FragmentActivity activity, String url) {
+    public Authenticate(FragmentActivity activity) {
         this.activity = activity;
-
-        // Initialize an instance of IdCloudClient.
-        this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
     public void execute(OnExecuteFinishListener<Void> listener) {
@@ -41,8 +38,8 @@ public class Authenticate {
         );
         uiCallbacks.securePinPadUiCallback = securePinUiCallback;
         uiCallbacks.biometricUiCallback = new SampleBiometricUiCallback();
-        uiCallbacks.commonUiCallback = new SampleCommonUiCallback(
-                fragmentManager
+        uiCallbacks.commonUiCallback = new CustomAppClientConformerCallback(
+                activity, fragmentManager
         );
 
         //Set fetch request callbacks
@@ -72,10 +69,18 @@ public class Authenticate {
 
         // Create an instance of the Fetch request.
         // Instances of requests should be held as an instance variable to ensure that callbacks will function as expected and to prevent unexpected behaviour.
-        FetchRequest fetchRequest = idCloudClient.createFetchRequest(uiCallbacks,
-                fetchRequestCallback);
-        //Execute request
-        fetchRequest.execute();
+        BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
+            @Override
+            public void onSuccess(IdCloudClient idCloudClient) {
+                FetchRequest fetchRequest = idCloudClient.createFetchRequest(uiCallbacks,
+                        fetchRequestCallback);
+                //Execute request
+                fetchRequest.execute();
+            }
+
+            @Override
+            public void onError(IdCloudClientException ignored) { }
+        });
     }
 
 }

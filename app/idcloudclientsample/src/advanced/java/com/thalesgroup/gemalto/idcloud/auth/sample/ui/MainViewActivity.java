@@ -1,6 +1,5 @@
 package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
-import static com.thalesgroup.gemalto.idcloud.auth.sample.ui.PushNotificationService.MAP_EXTRA_NAME;
 import static com.thalesgroup.gemalto.idcloud.auth.sample.ui.PushNotificationService.PROCESS_PUSH_NOTIFICATION_ACTION;
 
 import android.content.BroadcastReceiver;
@@ -19,7 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thalesgroup.gemalto.idcloud.auth.sample.BaseActivity;
-import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
+import com.thalesgroup.gemalto.idcloud.auth.sample.MainActivity;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.OnExecuteFinishListener;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.ProcessNotification;
@@ -59,7 +58,7 @@ public class MainViewActivity extends BaseActivity implements BottomNavigationVi
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
 
         Intent intent = getIntent();
-        Bundle bundle = intent.getBundleExtra(MAP_EXTRA_NAME);
+        Bundle bundle = intent.getBundleExtra(MainActivity.EXTRA_NAME_PUSH_NOTIFICATION);
         if (bundle != null && bundle.containsKey("ms")) {
             Map<String, String> notification = new HashMap<>();
             notification.put("ms", bundle.getString("ms"));
@@ -116,7 +115,7 @@ public class MainViewActivity extends BaseActivity implements BottomNavigationVi
 
     @Override
     public void handlePushNotification(Map<String, String> notification) {
-        ProcessNotification processNotification = new ProcessNotification(this, Configuration.url, notification);
+        ProcessNotification processNotification = new ProcessNotification(this, notification);
         processNotification.execute(new OnExecuteFinishListener<Void>() {
             @Override
             public void onSuccess(Void ignored) {

@@ -3,24 +3,21 @@ package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 import androidx.fragment.app.FragmentActivity;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.operation.UnenrollRequestCallback;
 import com.thales.dis.mobile.idcloud.auth.operation.UnenrollResponse;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BaseApplication;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SamplePersistence;
 
 public class Unenroll  {
 
-    private FragmentActivity activity;
-    private IdCloudClient idCloudClient;
+    private final FragmentActivity activity;
 
-    public Unenroll(FragmentActivity activity,String url) {
+    public Unenroll(FragmentActivity activity) {
         this.activity = activity;
-        // Initialize an instance of IdCloudClient.
-        this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
     public void execute(OnExecuteFinishListener<Void> listener) {
@@ -51,7 +48,15 @@ public class Unenroll  {
         };
 
         //Create unenroll request and execute request.
-        idCloudClient.createUnenrollRequest(unenrollRequestCallback).execute();
+        BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
+            @Override
+            public void onSuccess(IdCloudClient idCloudClient) {
+                idCloudClient.createUnenrollRequest(unenrollRequestCallback).execute();
+            }
+
+            @Override
+            public void onError(IdCloudClientException ignored) { }
+        });
     }
 
 }

@@ -23,11 +23,6 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.thales.dis.mobile.idcloud.auth.Authenticator;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
-import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
-import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.ActivatedAuthenticators;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.AddAuthenticator;
@@ -221,7 +216,7 @@ public class AuthenticatorsFragment extends Fragment {
 
     private void refreshAuthenticators() {
         if (activatedAuthenticatorsObj == null) {
-            activatedAuthenticatorsObj = new ActivatedAuthenticators(getActivity(), Configuration.url);
+            activatedAuthenticatorsObj = new ActivatedAuthenticators(getActivity());
         }
         activatedAuthenticatorsObj.execute(new OnExecuteFinishListener<Authenticator[]>() {
             @Override
@@ -241,42 +236,21 @@ public class AuthenticatorsFragment extends Fragment {
     }
 
     private void executeChangePin(final OnExecuteFinishListener listener) {
-        // Initialize an instance of the Add Authenticate use-case, providing
-        // (1) the pre-configured URL
-        // (2) the pinPadUiDelegate
-
-        SampleSecurePinUiCallback securePinPadUiCallback = new SampleSecurePinUiCallback(
-                getActivity().getSupportFragmentManager(), getString(R.string.usecase_enrollment)
-        );
-
-        changPinObj = new ChangePin(getActivity(), Configuration.url, securePinPadUiCallback);
+        // Initialize an instance of the Add Authenticate use-case
+        changPinObj = new ChangePin(getActivity());
         changPinObj.execute(listener);
     }
 
     private void executeAddAuthenticator(final OnExecuteFinishListener listener) {
-        // Initialize an instance of the Add Authenticate use-case, providing
-        // (1) the pre-configured URL
-        // (2) the uiCallbacks
-
-        UiCallbacks uiCallbacks = new UiCallbacks();
-        SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
-                getActivity().getSupportFragmentManager(), getString(R.string.usecase_addauthenticator)
-        );
-        uiCallbacks.securePinPadUiCallback = securePinUiCallback;
-        uiCallbacks.biometricUiCallback = new SampleBiometricUiCallback();
-        uiCallbacks.commonUiCallback = new SampleCommonUiCallback(
-                getActivity().getSupportFragmentManager()
-        );
-
-        addAuthenticatorObj = new AddAuthenticator(getActivity(), Configuration.url, uiCallbacks);
+        // Initialize an instance of the Add Authenticate use-case
+        addAuthenticatorObj = new AddAuthenticator(getActivity());
         addAuthenticatorObj.execute(listener);
     }
 
     private void executeRemoveAuthenticator(Authenticator authenticator, final OnExecuteFinishListener listener) {
         // Initialize an instance of the Remove Authenticate use-case, providing
-        // (1) the pre-configured URL
-        // (2) the authenticator to be removed
-        removeAuthenticatorObj = new RemoveAuthenticator(getActivity(), Configuration.url, authenticator);
+        // (1) the authenticator to be removed
+        removeAuthenticatorObj = new RemoveAuthenticator(getActivity(), authenticator);
         removeAuthenticatorObj.execute(listener);
     }
 

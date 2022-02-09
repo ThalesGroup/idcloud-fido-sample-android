@@ -4,7 +4,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.operation.EnrollRequest;
 import com.thales.dis.mobile.idcloud.auth.operation.EnrollRequestCallback;
@@ -17,23 +16,19 @@ import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BaseApplication;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.SamplePersistence;
 
 public class Enroll  {
 
-    protected FragmentActivity activity;
-    protected String code;
-    protected IdCloudClient idCloudClient;
+    protected final FragmentActivity activity;
+    protected final String code;
 
-    public Enroll(FragmentActivity activity, String code, String url) {
+    public Enroll(FragmentActivity activity, String code) {
         this.activity = activity;
         this.code = code;
-
-        // Initialize an instance of IdCloudClient.
-        this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
-
     }
 
     public void execute(OnExecuteFinishListener<Void> listener) {
@@ -83,13 +78,22 @@ public class Enroll  {
 
         // Create an instance of the Enrollment request providing the required credentials.
         // Instances of requests should be held as an instance variable to ensure that completion callbacks will function as expected and to prevent unexpected behaviour.
-        EnrollRequest enrollRequest = idCloudClient.createEnrollRequest(
-                token,
-                uiCallbacks,
-                enrollRequestCallback
-        );
-        //Execute enroll request.
-        enrollRequest.execute();
+        BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
+            @Override
+            public void onSuccess(IdCloudClient idCloudClient) {
+                EnrollRequest enrollRequest = idCloudClient.createEnrollRequest(
+                        token,
+                        uiCallbacks,
+                        enrollRequestCallback
+                );
+                //Execute enroll request.
+                enrollRequest.execute();
+            }
+
+            @Override
+            public void onError(IdCloudClientException ignored) { }
+        });
+
     }
 
 }

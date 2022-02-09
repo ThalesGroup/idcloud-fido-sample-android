@@ -4,32 +4,41 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.operation.AddAuthenticatorRequestCallback;
 import com.thales.dis.mobile.idcloud.auth.operation.AddAuthenticatorResponse;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleCommonUiCallback;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
+import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BaseApplication;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
+import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 
 
 public class AddAuthenticator {
 
-    private FragmentActivity activity;
-    private UiCallbacks uiCallbacks;
-    private IdCloudClient idCloudClient;
+    private final FragmentActivity activity;
 
-    public AddAuthenticator(FragmentActivity activity, String url, UiCallbacks uiCallbacks) {
+    public AddAuthenticator(FragmentActivity activity) {
         this.activity = activity;
-        this.uiCallbacks = uiCallbacks;
-
-        // Initialize an instance of IdCloudClient.
-        this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
     public void execute(OnExecuteFinishListener<Void> listener) {
         Progress.showProgress(activity, IdCloudProgress.START);
+
+        UiCallbacks uiCallbacks = new UiCallbacks();
+        SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
+                activity.getSupportFragmentManager(), activity.getString(R.string.usecase_addauthenticator)
+        );
+        uiCallbacks.securePinPadUiCallback = securePinUiCallback;
+        uiCallbacks.biometricUiCallback = new SampleBiometricUiCallback();
+        uiCallbacks.commonUiCallback = new SampleCommonUiCallback(
+                activity.getSupportFragmentManager()
+        );
+
         //create add Authenticator Request Callback
         final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(activity.getSupportFragmentManager());
         AddAuthenticatorRequestCallback addAuthenticatorRequestCallback = new AddAuthenticatorRequestCallback() {
@@ -55,7 +64,15 @@ public class AddAuthenticator {
             }
         };
         // Create Add authenticator request with callbacks and execute request
-        idCloudClient.createAddAuthenticatorRequest(uiCallbacks, addAuthenticatorRequestCallback).execute();
+        BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
+            @Override
+            public void onSuccess(IdCloudClient idCloudClient) {
+                idCloudClient.createAddAuthenticatorRequest(uiCallbacks, addAuthenticatorRequestCallback).execute();
+            }
+
+            @Override
+            public void onError(IdCloudClientException ignored) { }
+        });
     }
 
 }

@@ -10,24 +10,22 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
 import com.thales.dis.mobile.idcloud.auth.operation.NotificationProfile;
 import com.thales.dis.mobile.idcloud.auth.operation.RefreshPushTokenRequestCallback;
 import com.thales.dis.mobile.idcloud.auth.operation.RefreshPushTokenResponse;
 import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
+import com.thalesgroup.gemalto.idcloud.auth.sample.BaseApplication;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 
 public class RefreshPushToken {
 
-    private FragmentActivity activity;
-    private IdCloudClient idCloudClient;
+    private final FragmentActivity activity;
 
-    public RefreshPushToken(FragmentActivity activity, String url) {
+    public RefreshPushToken(FragmentActivity activity) {
         this.activity = activity;
-        this.idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, url);
     }
 
     public void execute(OnExecuteFinishListener<Void> listener) {
@@ -68,7 +66,16 @@ public class RefreshPushToken {
                 };
 
                 NotificationProfile notificationProfile = new NotificationProfile(pushToken);
-                idCloudClient.createRefreshPushTokenRequest(notificationProfile, refreshPushTokenRequestCallback).execute();
+
+                BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
+                    @Override
+                    public void onSuccess(IdCloudClient idCloudClient) {
+                        idCloudClient.createRefreshPushTokenRequest(notificationProfile, refreshPushTokenRequestCallback).execute();
+                    }
+
+                    @Override
+                    public void onError(IdCloudClientException ignored) { }
+                });
             }
         });
     }

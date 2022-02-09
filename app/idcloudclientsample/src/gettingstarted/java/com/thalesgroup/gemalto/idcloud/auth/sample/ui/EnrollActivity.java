@@ -77,8 +77,7 @@ public class EnrollActivity extends BaseActivity {
     private void executeEnroll(String enrollmentToken, OnExecuteFinishListener listener) {
         // Initialize an instance of the Enroll use-case, providing
         // (1) the retrieved code
-        // (2) the pre-configured URL
-        Enroll enrollObj = new Enroll(EnrollActivity.this, enrollmentToken, Configuration.url);
+        Enroll enrollObj = new Enroll(EnrollActivity.this, enrollmentToken);
         enrollObj.execute(listener);
     }
 

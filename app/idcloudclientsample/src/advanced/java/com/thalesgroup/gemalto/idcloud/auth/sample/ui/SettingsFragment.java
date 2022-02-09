@@ -18,7 +18,6 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
-import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.OnExecuteFinishListener;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.RefreshPushToken;
@@ -78,7 +77,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void executeRefreshPushToken(final OnExecuteFinishListener listener) {
         if (isNotificationsEnabled()) {
-            RefreshPushToken refreshPushToken = new RefreshPushToken(getActivity(), Configuration.url);
+            RefreshPushToken refreshPushToken = new RefreshPushToken(getActivity());
             refreshPushToken.execute(listener);
         } else {
             DialogUtil.showAlertDialog(getActivity(), getString(R.string.alert_error_title), getString(R.string.enable_push_notification_from_setting_error), new DialogInterface.OnClickListener() {

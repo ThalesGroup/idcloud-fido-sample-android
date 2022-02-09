@@ -8,12 +8,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.thalesgroup.gemalto.idcloud.auth.sample.MainActivity;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PushNotificationService extends FirebaseMessagingService {
-    public static final String MAP_EXTRA_NAME = "PROCESS_PUSH_NOTIFICATION_MAP";
     public static final String PROCESS_PUSH_NOTIFICATION_ACTION = "PROCESS_PUSH_NOTIFICATION_ACTION";
 
     @Override
@@ -27,7 +27,7 @@ public class PushNotificationService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Intent intent = new Intent(PROCESS_PUSH_NOTIFICATION_ACTION);
             HashMap<String, String> map = new HashMap<>(remoteMessage.getData());
-            intent.putExtra(MAP_EXTRA_NAME, map);
+            intent.putExtra(MainActivity.EXTRA_NAME_PUSH_NOTIFICATION, map);
             intent.setAction(PROCESS_PUSH_NOTIFICATION_ACTION);
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }

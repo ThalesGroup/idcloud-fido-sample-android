@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thalesgroup.gemalto.idcloud.auth.sample.BaseActivity;
-import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.Authenticate;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.OnExecuteFinishListener;
@@ -102,15 +101,13 @@ public class AuthenticateHomeFragment extends Fragment {
 
     private void executeAuthenticate(final OnExecuteFinishListener listener) {
         // Initialize an instance of the Authenticate use-case, providing
-        // (1) the pre-configured URL
-        Authenticate authenticateObj = new Authenticate(getActivity(), Configuration.url);
+        Authenticate authenticateObj = new Authenticate(getActivity());
         authenticateObj.execute(listener);
     }
 
     private void executeUnenroll(final OnExecuteFinishListener listener) {
         // Initialize an instance of the Unenroll use-case, providing
-        // (1) the pre-configured URL
-        Unenroll unenrollObj = new Unenroll(getActivity(), Configuration.url);
+        Unenroll unenrollObj = new Unenroll(getActivity());
         unenrollObj.execute(listener);
     }
 

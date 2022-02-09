@@ -89,6 +89,9 @@
     <string name="btn_title_proceed">Proceed</string>
     <string name="sign_alert_message">Transfer <xliff:g id="amount">%s</xliff:g> from <xliff:g id="from">%s</xliff:g> To <xliff:g id="to">%s</xliff:g>.</string>
     <string name="sign_alert_date"><xliff:g id="date">%s</xliff:g></string>
+    <string name="gcm_notification_channel_id">important</string>
+    <string name="gcm_notification_channel_name">Authentication</string>
+    <string name="gcm_notification_channel_description">Authentication triggered through push notification</string>
 
 
 </resources>

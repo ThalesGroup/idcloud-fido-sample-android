@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.core.app.NotificationChannelCompat;
+import androidx.core.app.NotificationManagerCompat;
+
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.EnrollActivity;
@@ -31,6 +34,8 @@ public class MainActivity extends BaseActivity {
 
         //Set safetyNet Attestation Key. Please set it in configuration.java
         IdCloudClientConfig.setAttestationKey(Configuration.safetyNetAttestationKey);
+
+        createNotificationChannel();
 
         handleIntent(getIntent());
     }
@@ -65,4 +70,16 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() { }
+
+    private void createNotificationChannel() {
+        String channelId = getString(R.string.gcm_notification_channel_id);
+        String name = getString(R.string.gcm_notification_channel_name);
+        String description = getString(R.string.gcm_notification_channel_description);
+        NotificationChannelCompat channel = new NotificationChannelCompat.Builder(channelId, NotificationManagerCompat.IMPORTANCE_MAX)
+                .setName(name)
+                .setDescription(description)
+                .setVibrationEnabled(true)
+                .build();
+        NotificationManagerCompat.from(this).createNotificationChannel(channel);
+    }
 }

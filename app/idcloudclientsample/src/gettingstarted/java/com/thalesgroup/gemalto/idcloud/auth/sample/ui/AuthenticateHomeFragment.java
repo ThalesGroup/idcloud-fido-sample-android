@@ -71,8 +71,7 @@ public class AuthenticateHomeFragment extends Fragment {
 
     private void executeAuthenticate(OnExecuteFinishListener listener) {
         // Initialize an instance of the Authenticate use-case, providing
-        // (1) the pre-configured URL
-        Authenticate authenticateObj = new Authenticate(getActivity(), Configuration.url);
+        Authenticate authenticateObj = new Authenticate(getActivity());
         authenticateObj.execute(listener);
     }
 
