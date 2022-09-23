@@ -4,6 +4,7 @@ package com.thalesgroup.gemalto.idcloud.auth.sample;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -34,6 +35,16 @@ public class MainActivity extends BaseActivity {
 
         //Set safetyNet Attestation Key. Please set it in configuration.java
         IdCloudClientConfig.setAttestationKey(Configuration.safetyNetAttestationKey);
+
+        //Set PIN rules
+        if (!PinConfig.setMinimumLength(Configuration.pinLength[0])) {
+            Toast.makeText(this, "Minimal PIN length is not valid.", Toast.LENGTH_SHORT).show();
+        }
+        if (!PinConfig.setMaximumLength(Configuration.pinLength[1])) {
+            Toast.makeText(this, "Maximal PIN length is not valid.", Toast.LENGTH_SHORT).show();
+        }
+
+        PinConfig.setPinRules(this, Configuration.pinRules);
 
         createNotificationChannel();
 

@@ -27,13 +27,11 @@ public class BaseApplication extends Application implements IdCloudClientProvide
         INSTANCE = this;
     }
 
-    public static BaseApplication getInstance() {
-        return INSTANCE;
-    }
+    public static BaseApplication getInstance() {return INSTANCE; }
 
     @Override
     public void createIdCloudClient(FragmentActivity activity) {
-        IdCloudClient idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, Configuration.url);
+        IdCloudClient idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, Configuration.url, Configuration.tenantId);
         idCloudClientPool.put(activity.hashCode(), idCloudClient);
     }
 
@@ -42,7 +40,7 @@ public class BaseApplication extends Application implements IdCloudClientProvide
         idCloudClientPool.remove(activity.hashCode());
     }
 
-    @Override
+    @Override`
     public void getIdCloudClient(FragmentActivity activity, OnExecuteFinishListener<IdCloudClient> listener) {
         executor.submit(new Runnable() {
             @Override
