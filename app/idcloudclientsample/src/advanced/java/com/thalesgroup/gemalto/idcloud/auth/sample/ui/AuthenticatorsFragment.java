@@ -302,8 +302,12 @@ public class AuthenticatorsFragment extends Fragment {
                     title.setText(getString(R.string.title_biometric_authenticator));
                     icon.setImageResource(R.drawable.ic_fingerprint);
                     break;
-                case EMBEDDED:
-                    title.setText(getString(R.string.title_system_embeded_authenticator));
+                case PLATFORM_LOCAL:
+                    title.setText(getString(R.string.title_platform_local_authenticator));
+                    icon.setImageResource(R.drawable.ic_fingerprint);
+                    break;
+                case PLATFORM:
+                    title.setText(getString(R.string.title_platform_authenticator));
                     icon.setImageResource(R.drawable.ic_fingerprint);
                     break;
                 default:

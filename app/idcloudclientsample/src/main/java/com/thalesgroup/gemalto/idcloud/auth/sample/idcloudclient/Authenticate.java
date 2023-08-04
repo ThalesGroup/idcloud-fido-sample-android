@@ -4,19 +4,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
-import com.thales.dis.mobile.idcloud.auth.operation.FetchRequest;
-import com.thales.dis.mobile.idcloud.auth.operation.FetchRequestCallback;
-import com.thales.dis.mobile.idcloud.auth.operation.FetchResponse;
 import com.thales.dis.mobile.idcloud.auth.operation.IdCloudProgress;
-import com.thales.dis.mobile.idcloud.auth.ui.UiCallbacks;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleBiometricUiCallback;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleResponseCallback;
-import com.thales.dis.mobile.idcloud.authui.callback.SampleSecurePinUiCallback;
-import com.thalesgroup.gemalto.idcloud.auth.sample.BaseApplication;
 import com.thalesgroup.gemalto.idcloud.auth.sample.Progress;
-import com.thalesgroup.gemalto.idcloud.auth.sample.R;
-import com.thalesgroup.gemalto.idcloud.auth.sample.ui.CustomAppClientConformerCallback;
 
 public class Authenticate {
 

@@ -16,7 +16,8 @@
     <string name="title_cancel">Cancel</string>
     <string name="title_biometric_authenticator">Biometric Authenticator</string>
     <string name="title_pin_authenticator">PIN Authenticator</string>
-    <string name="title_system_embeded_authenticator">System Embedded Authenticator</string>
+    <string name="title_platform_local_authenticator">Platform Local Authenticator</string>
+    <string name="title_platform_authenticator">Platform Authenticator</string>
     <string name="toolbar_title">Authenticators</string>
     <string name="alert_error_title">Error</string>
     <string name="alert_error_message_app_links">You are already enrolled. Please unenroll your application before clicking the new enrollment link.</string>
