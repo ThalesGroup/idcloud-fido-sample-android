@@ -40,7 +40,7 @@ public class BaseApplication extends Application implements IdCloudClientProvide
         idCloudClientPool.remove(activity.hashCode());
     }
 
-    @Override`
+    @Override
     public void getIdCloudClient(FragmentActivity activity, OnExecuteFinishListener<IdCloudClient> listener) {
         executor.submit(new Runnable() {
             @Override

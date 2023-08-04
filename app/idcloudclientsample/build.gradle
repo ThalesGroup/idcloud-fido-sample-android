@@ -10,7 +10,7 @@ allprojects {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     dexOptions {
         javaMaxHeapSize "4g"
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId "com.thalesgroup.gemalto.idcloud.auth.sample"
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -110,4 +110,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+
+    //Passkeys Credentials API
+    implementation "androidx.credentials:credentials:1.0.0-alpha09"
+    // optional - needed for credentials support from play services, for devices running
+    // Android 13 and below.
+    implementation "androidx.credentials:credentials-play-services-auth:1.0.0-alpha09"
 }
