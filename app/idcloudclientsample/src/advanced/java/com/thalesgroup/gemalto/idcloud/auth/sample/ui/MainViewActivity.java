@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2020-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
 import static com.thalesgroup.gemalto.idcloud.auth.sample.ui.PushNotificationService.PROCESS_PUSH_NOTIFICATION_ACTION;

@@ -1,7 +1,12 @@
+/*
+ * Copyright © 2021-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample.ui;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,13 +16,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
+import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
+import com.thalesgroup.gemalto.idcloud.auth.sample.Configuration;
 import com.thalesgroup.gemalto.idcloud.auth.sample.R;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.OnExecuteFinishListener;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.RefreshPushToken;
@@ -72,6 +80,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return false;
             }
         });
+
+        Preference clientIdPreference = findPreference(getContext().getString(R.string.key_getClientId));
+        clientIdPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                showClientID(getContext());
+                return false;
+            }
+        });
     }
 
 
@@ -106,6 +123,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             return true;
         } else {
             return NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
+        }
+    }
+
+    private void showClientID(final Context context) {
+        try {
+            IdCloudClient idCloudClient = IdCloudClientFactory.createIdCloudClient(getActivity(), Configuration.url, Configuration.tenantId);
+            String clientId = idCloudClient.getClientID();
+
+            DialogUtil.showAlertDialog(getActivity(), getString(R.string.clientID), clientId, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+        } catch (IdCloudClientException e) {
+            Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 }

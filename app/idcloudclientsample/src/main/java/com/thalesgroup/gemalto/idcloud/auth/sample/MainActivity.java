@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2020-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample;
 
 
@@ -11,6 +15,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientConfig;
+import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
+import com.thales.dis.mobile.idcloud.auth.ui.pin.PinConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.EnrollActivity;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.MainViewActivity;
 import com.thalesgroup.gemalto.securelog.SecureLogConfig;
@@ -44,7 +50,11 @@ public class MainActivity extends BaseActivity {
             Toast.makeText(this, "Maximal PIN length is not valid.", Toast.LENGTH_SHORT).show();
         }
 
-        PinConfig.setPinRules(this, Configuration.pinRules);
+        try {
+            PinConfig.setPinRules(this, Configuration.pinRules);
+        } catch (IdCloudClientException e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
         createNotificationChannel();
 

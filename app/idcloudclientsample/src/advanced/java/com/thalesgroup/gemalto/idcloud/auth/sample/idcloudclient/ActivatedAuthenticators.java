@@ -1,4 +1,10 @@
+/*
+ * Copyright © 2020-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
+
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -29,14 +35,20 @@ public class ActivatedAuthenticators  {
                 executor.submit(new Runnable() {
                     @Override
                     public void run() {
-                        List<Authenticator> authenticators = idCloudClient.getActivatedAuthenticators();
-                        listener.onSuccess(authenticators.toArray(new Authenticator[0]));
+                        try {
+                            List<Authenticator> authenticators = idCloudClient.getActivatedAuthenticators();
+                            listener.onSuccess(authenticators.toArray(new Authenticator[0]));
+                        } catch (IdCloudClientException e) {
+                            listener.onError(e);
+                        }
                     }
                 });
             }
 
             @Override
-            public void onError(IdCloudClientException ignored) { }
+            public void onError(IdCloudClientException e) {
+                Toast.makeText(activity, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

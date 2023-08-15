@@ -1,4 +1,10 @@
+/*
+ * Copyright © 2020-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample;
+
+import com.thales.dis.mobile.idcloud.auth.ui.pin.PinConfig;
 
 public class Configuration {
 
@@ -16,13 +22,11 @@ public class Configuration {
     // SecureLog public key exponent. Used to encrypt the log.
     public final static byte[] secureLogPublicKeyExponent = new byte[] {};
 
-    // IdCloud PIN Authenticator rules
     public final static int pinRules = PinConfig.PinRule.LENGTH
             | PinConfig.PinRule.PALINDROME
             | PinConfig.PinRule.SERIES
             | PinConfig.PinRule.UNIFORM;
 
-    // IdCloud PIN Authenticator minimum and maximum lengths
     public final static int[] pinLength = new int[]{6, 8};
 
 }

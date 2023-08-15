@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2020 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample;
 
 import android.content.Context;

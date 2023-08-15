@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;

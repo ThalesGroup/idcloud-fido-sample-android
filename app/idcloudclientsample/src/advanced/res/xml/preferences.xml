@@ -5,7 +5,7 @@ android:title="@string/title_settings">
     android:title="@string/sdk_version">
         <Preference
             android:key="@string/key_sdk_version"
-            android:title="2.1.0"
+            android:title="2.4.0"
             />
     </PreferenceCategory>
 
@@ -15,5 +15,13 @@ android:title="@string/title_settings">
             android:key="@string/key_refresh_push_token"
             android:title="@string/device_push_token" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/category_others">
+        <Preference
+            android:key="@string/key_getClientId"
+            android:title="@string/getClientId"
+            />
     </PreferenceCategory>
 </PreferenceScreen>

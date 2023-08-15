@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2021-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
 import android.widget.Toast;
@@ -74,7 +78,9 @@ public class RefreshPushToken {
                     }
 
                     @Override
-                    public void onError(IdCloudClientException ignored) { }
+                    public void onError(IdCloudClientException e) {
+                        Toast.makeText(activity, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
         });

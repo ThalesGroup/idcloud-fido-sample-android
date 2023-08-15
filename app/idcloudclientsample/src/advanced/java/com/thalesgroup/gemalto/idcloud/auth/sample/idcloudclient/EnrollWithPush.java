@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2021-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
 import android.widget.Toast;
@@ -58,15 +62,6 @@ public class EnrollWithPush extends Enroll {
                             fragmentManager
                     );
 
-                    // Initialize an instance of EnrollmentToken from its corresponding Factory.
-                    // Instances of EnrollmentToken are initialized with a code retrieved from the Bank via a QR code (i.e. or other means) and is simply encoded as a UTF8 data.
-                    EnrollmentToken token = EnrollmentTokenFactory.createEnrollmentTokenWithBlob(code.getBytes());
-                    if (task.isSuccessful()) {
-                        token.setDevicePushToken(task.getResult());
-                    } else {
-                        Toast.makeText(activity, R.string.text_push_token_failure, Toast.LENGTH_SHORT).show();
-                    }
-
                     //Set enroll Request Call back
                     final SampleResponseCallback sampleResponseCallback = new SampleResponseCallback(fragmentManager);
                     EnrollRequestCallback enrollRequestCallback = new EnrollRequestCallback() {
@@ -98,17 +93,31 @@ public class EnrollWithPush extends Enroll {
                     BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
                         @Override
                         public void onSuccess(IdCloudClient idCloudClient) {
-                            EnrollRequest enrollRequest = idCloudClient.createEnrollRequest(
-                                    token,
-                                    uiCallbacks,
-                                    enrollRequestCallback
-                            );
-                            //Execute enroll request.
-                            enrollRequest.execute();
+                            try {
+                                // Initialize an instance of EnrollmentToken from its corresponding Factory.
+                                // Instances of EnrollmentToken are initialized with a code retrieved from the Bank via a QR code (i.e. or other means) and is simply encoded as a UTF8 data.
+                                EnrollmentToken token = EnrollmentTokenFactory.createEnrollmentTokenWithBlob(code.getBytes());
+                                if (task.isSuccessful()) {
+                                    token.setDevicePushToken(task.getResult());
+                                } else {
+                                    Toast.makeText(activity, R.string.text_push_token_failure, Toast.LENGTH_SHORT).show();
+                                }
+                                EnrollRequest enrollRequest = idCloudClient.createEnrollRequest(
+                                        token,
+                                        uiCallbacks,
+                                        enrollRequestCallback
+                                );
+                                //Execute enroll request.
+                                enrollRequest.execute();
+                            } catch (IdCloudClientException e) {
+                                onError(e);
+                            }
                         }
 
                         @Override
-                        public void onError(IdCloudClientException ignored) { }
+                        public void onError(IdCloudClientException e) {
+                            Toast.makeText(activity, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
             });

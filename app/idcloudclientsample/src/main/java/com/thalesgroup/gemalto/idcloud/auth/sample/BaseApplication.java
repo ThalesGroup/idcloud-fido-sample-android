@@ -1,3 +1,7 @@
+/*
+ * Copyright © 2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample;
 
 import android.app.Application;
@@ -6,6 +10,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
 import com.thales.dis.mobile.idcloud.auth.IdCloudClientFactory;
+import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.IdCloudClientProvider;
 import com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient.OnExecuteFinishListener;
 
@@ -27,10 +32,12 @@ public class BaseApplication extends Application implements IdCloudClientProvide
         INSTANCE = this;
     }
 
-    public static BaseApplication getInstance() {return INSTANCE; }
+    public static BaseApplication getInstance() {
+        return INSTANCE;
+    }
 
     @Override
-    public void createIdCloudClient(FragmentActivity activity) {
+    public void createIdCloudClient(FragmentActivity activity) throws IdCloudClientException {
         IdCloudClient idCloudClient = IdCloudClientFactory.createIdCloudClient(activity, Configuration.url, Configuration.tenantId);
         idCloudClientPool.put(activity.hashCode(), idCloudClient);
     }
@@ -46,7 +53,11 @@ public class BaseApplication extends Application implements IdCloudClientProvide
             @Override
             public void run() {
                 if (!idCloudClientPool.containsKey(activity.hashCode())) {
-                    createIdCloudClient(activity);
+                    try {
+                        createIdCloudClient(activity);
+                    } catch (IdCloudClientException e) {
+                        listener.onError(e);
+                    }
                 }
                 listener.onSuccess(idCloudClientPool.get(activity.hashCode()));
             }

@@ -1,5 +1,11 @@
+/*
+ * Copyright © 2020-2022 THALES. All rights reserved.
+ */
+
 package com.thalesgroup.gemalto.idcloud.auth.sample.idcloudclient;
 
+
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
@@ -56,7 +62,9 @@ public class RemoveAuthenticator  {
             }
 
             @Override
-            public void onError(IdCloudClientException ignored) { }
+            public void onError(IdCloudClientException e) {
+                Toast.makeText(activity, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
