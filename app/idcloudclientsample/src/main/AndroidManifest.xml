@@ -48,6 +48,11 @@
                     android:host="genuflecto.github.io"
                     android:path="/enroll" />
 
+                <data
+                    android:scheme="https"
+                    android:host="idcfido.demo.gemalto.com"
+                    android:path="/enroll" />
+
             </intent-filter>
 
         </activity>
