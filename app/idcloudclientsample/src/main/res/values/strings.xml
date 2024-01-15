@@ -97,7 +97,7 @@
     <!-- Get Client ID -->
     <string name="category_others">Others</string>
     <string name="key_getClientId">key_getClientId</string>
-    <string name="getClientId">Get Client ID</string>
+    <string name="getClientId">Client ID</string>
     <string name="clientID">Client ID</string>
     
 </resources>
