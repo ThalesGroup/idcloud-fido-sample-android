@@ -9,8 +9,8 @@ android {
     defaultConfig {
         applicationId "com.thalesgroup.gemalto.idcloud.auth.sample"
         minSdkVersion 23
-        targetSdkVersion 33
-        compileSdk 33
+        targetSdkVersion 34
+        compileSdk 34
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -107,8 +107,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 
      //Passkeys Credentials API
-     implementation "androidx.credentials:credentials:1.0.0-alpha09"
+     implementation "androidx.credentials:credentials:1.2.0"
      // optional - needed for credentials support from play services, for devices running
      // Android 13 and below.
-     implementation "androidx.credentials:credentials-play-services-auth:1.0.0-alpha09"
+     implementation "androidx.credentials:credentials-play-services-auth:1.2.0"
 }
