@@ -14,7 +14,6 @@ import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
-import com.thales.dis.mobile.idcloud.auth.IdCloudClientConfig;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.ui.pin.PinConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.EnrollActivity;
@@ -38,9 +37,6 @@ public class MainActivity extends BaseActivity {
                 .build();
 
         SecureLogArchive.mSecureLog = IdCloudClient.configureSecureLog(secureLogConfig);
-
-        //Set safetyNet Attestation Key. Please set it in configuration.java
-        IdCloudClientConfig.setAttestationKey(Configuration.safetyNetAttestationKey);
 
         //Set PIN rules
         if (!PinConfig.setMinimumLength(Configuration.pinLength[0])) {
