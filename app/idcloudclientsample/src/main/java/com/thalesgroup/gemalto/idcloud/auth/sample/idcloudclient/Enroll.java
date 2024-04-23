@@ -45,14 +45,13 @@ public class Enroll {
         /* 1 */
         ## Set up the necessary UI callbacks ##
 
+        /* 2 */
+        ## Set enroll Request Callback ##
+
         // Initialize an instance of EnrollmentToken from its corresponding Factory.
         // Instances of EnrollmentToken are initialized with a code retrieved from the Bank via a QR code (i.e. or other means) and is simply encoded as a UTF8 data.
-        /* 2 */
-        ## Create an enrollment token ##
-
         /* 3 */
-        ## Set enroll Request Call back ##
-
+        ## Create an enrollment token ##
 
         // Create an instance of the Enrollment request providing the required credentials.
         // Instances of requests should be held as an instance variable to ensure that completion callbacks will function as expected and to prevent unexpected behaviour.
