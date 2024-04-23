@@ -46,11 +46,21 @@ public class Authenticate {
 
         // Create an instance of the Fetch request.
         // Instances of requests should be held as an instance variable to ensure that callbacks will function as expected and to prevent unexpected behaviour.
-        /* 3 */
-        ## Create a Fetch request callback ##
+        BaseApplication.getInstance().getIdCloudClient(activity, new OnExecuteFinishListener<IdCloudClient>() {
+            @Override
+            public void onSuccess(IdCloudClient idCloudClient) {
+                /* 3 */
+                ## Create a Fetch request callback ##
+                
+                /* 4 */
+                ## Execute request ##
+            }
 
-        /* 4 */
-        ## Execute request ##
-
+            @Override
+            public void onError(IdCloudClientException e) {
+                Toast.makeText(activity, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 }
