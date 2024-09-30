@@ -29,7 +29,7 @@ public class ChangePin  {
     }
 
     public void execute(OnExecuteFinishListener<Void> listener) {
-        SampleSecurePinUiCallback securePinPadUiCallback = new SampleSecurePinUiCallback(
+        SampleSecurePinUiCallback securePinPadUiCallback = new SampleSecurePinUiCallback(activity,
                 activity.getSupportFragmentManager(), activity.getString(R.string.usecase_enrollment)
         );
 

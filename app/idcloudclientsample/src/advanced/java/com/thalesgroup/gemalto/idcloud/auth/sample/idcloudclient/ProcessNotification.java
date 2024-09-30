@@ -42,7 +42,7 @@ public class ProcessNotification {
         UiCallbacks uiCallbacks = new UiCallbacks();
 
         //  PASSCODE
-        SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
+        SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(activity,
                 fragmentManager, activity.getString(R.string.usecase_process_notification)
         );
         uiCallbacks.securePinPadUiCallback = securePinUiCallback;
