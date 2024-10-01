@@ -36,7 +36,7 @@ public class AddAuthenticator {
         Progress.showProgress(activity, IdCloudProgress.START);
 
         UiCallbacks uiCallbacks = new UiCallbacks();
-        SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(activity,
+        SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
                 activity.getSupportFragmentManager(), activity.getString(R.string.usecase_addauthenticator)
         );
         uiCallbacks.securePinPadUiCallback = securePinUiCallback;

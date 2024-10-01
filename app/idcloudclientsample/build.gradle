@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.thalesgroup.gemalto.idcloud.auth.sample"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 34
         compileSdk 34
         versionCode 1

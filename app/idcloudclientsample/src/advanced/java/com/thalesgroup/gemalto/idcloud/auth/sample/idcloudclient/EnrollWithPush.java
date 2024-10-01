@@ -53,7 +53,7 @@ public class EnrollWithPush extends Enroll {
                     // Set up an instance of UiCallbacks, an encapsulated class containing all necessary UI callbacks required by IdCloud FIDO SDK.
                     // As a means of convenience, the IdCloud FIDO UI SDK provides a SampleSecurePinUiCallback,SampleCommonUiCallback class which conforms to the necessary callbacks of IdCloud FIDO SDK
                     UiCallbacks uiCallbacks = new UiCallbacks();
-                    SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(activity,
+                    SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
                             fragmentManager, activity.getString(R.string.usecase_enrollment)
                     );
                     uiCallbacks.securePinPadUiCallback = securePinUiCallback;
