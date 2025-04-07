@@ -5,7 +5,7 @@ android:title="@string/title_settings">
     android:title="@string/sdk_version">
         <Preference
             android:key="@string/key_sdk_version"
-            android:title="2.6.0"
+            android:title="2.8.0"
             />
     </PreferenceCategory>
 

@@ -37,7 +37,7 @@ public class AddAuthenticator {
 
         UiCallbacks uiCallbacks = new UiCallbacks();
         SampleSecurePinUiCallback securePinUiCallback = new SampleSecurePinUiCallback(
-                activity.getSupportFragmentManager(), activity.getString(R.string.usecase_addauthenticator)
+               activity.getSupportFragmentManager(), activity.getString(R.string.usecase_addauthenticator)
         );
         uiCallbacks.securePinPadUiCallback = securePinUiCallback;
         uiCallbacks.biometricUiCallback = new SampleBiometricUiCallback();
