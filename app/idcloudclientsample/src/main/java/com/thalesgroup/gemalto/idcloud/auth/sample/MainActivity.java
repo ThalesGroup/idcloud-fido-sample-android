@@ -14,6 +14,7 @@ import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.thales.dis.mobile.idcloud.auth.IdCloudClient;
+import com.thales.dis.mobile.idcloud.auth.IdCloudConfig;
 import com.thales.dis.mobile.idcloud.auth.exception.IdCloudClientException;
 import com.thales.dis.mobile.idcloud.auth.ui.pin.PinConfig;
 import com.thalesgroup.gemalto.idcloud.auth.sample.ui.EnrollActivity;
@@ -51,6 +52,7 @@ public class MainActivity extends BaseActivity {
         } catch (IdCloudClientException e) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
+        IdCloudConfig.setTlsCertificates(AppUtils.getPinningCertificates(this));
 
         createNotificationChannel();
 
